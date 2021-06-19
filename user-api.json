@@ -1,0 +1,33 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "Aninha",
+      "avatar": "https://occ-0-1317-1123.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABfbUufzrmfRsdANqSictkngrWowz70xmkZl3xIrEQvQ525x2YSCxRxJxuh54gqa6rarNEothuXQYmIjrcZZLSlKGhs_w.png?r=f80"
+    },
+    
+    {
+      "id": "2",
+      "name": "Vinícius e Felipe",
+      "avatar": "https://occ-0-1317-1123.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABXTZfT3HrlN3isAcfjvmKvD9mgemGjMsInadVOHfn1NDcDryGnK6B0DHECLYNC7vTMOksqx1rJzMklHY67PkEB667Ynd.png?r=95b"
+    },
+
+    {
+      "id": "3",
+      "name": "Alexandre",
+      "avatar": "https://occ-0-1317-1123.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABeUqbfriC_pGWtwTa1KOx-ZSiQYa7ltLkOuduGxY_GRRc41ugYJNGYHe4LNcmshST4qkRSENvcs2xFomPc0rtX8wq2NG.png?r=b97"
+    },
+
+    {
+      "id": "4",
+      "name": "Todos",
+      "avatar": "https://occ-0-1317-1123.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABXYGYCun9Sa2P1_GTaVtADVKfP2uC9e206A3KM1eABgccajzvO4PAR5XMPRiqqrY7SvvY_lneVww04vkQaDMuQ6I-wzm.png?r=c71"
+    },
+
+    {
+      "id": "5",
+      "name": "Eduardo",
+      "avatar": "https://occ-0-1317-1123.1.nflxso.net/dnm/api/v6/K6hjPJd6cR6FpVELC5Pd6ovHRSk/AAAABfSpeikItdLjBivRyhWFzmP0pOvaT_V5utqbKOMrvuYq0LtkulzvnGzCzMFYkkRqpm9PlRwWocGoRI_MABHzDSKxbHSm.png?r=318"
+    }
+  ]
+}
