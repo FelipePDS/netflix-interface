@@ -1,30 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 
-import { Container, ChooseProfile } from './styles';
+import { ProfileContext } from '../../context/ProfileContext';
 
 import Profile from '../Profile';
-import { userApi } from '../../services/api';
-
-type ProfileProps = {
-  id: string;
-  name: string;
-  avatar: string;
-};
+import { Container, ChooseProfile } from './styles';
 
 const ProfileList: React.FC = () => {
-  const [profiles, setProfiles] = useState<ProfileProps[]>([]);
-  
-  useEffect(() => {
-    if (profiles.length === 0) {
-      Promise.all([userApi.get('users')])
-        .then(([{ data }]) => {
-          setProfiles(data);
-        })
-          .catch(err => {
-            console.log(err);
-          });
-    }
-  }, [profiles]);
+  const { profileList } = useContext(ProfileContext);
 
   return (
     <Container>
@@ -32,10 +14,11 @@ const ProfileList: React.FC = () => {
 
       <ChooseProfile>
 
-        {profiles.map(profile => {
+        {profileList.map(profile => {
           return (
             <Profile 
               key={profile.id} 
+              profileId={profile.id}
               profileName={profile.name}
               profileAvatar={profile.avatar}
             />
