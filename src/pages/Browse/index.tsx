@@ -1,52 +1,65 @@
-import React, { useContext, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { ProfileContext } from '../../context/ProfileContext';
-import { userApi } from '../../services/api';
+import { userApi, movieApi } from '../../services/api';
 import { UpdateProfileList } from '../../utils/profileUtil';
 
 import { Container } from './styles';
 
 import MenuTop from '../../components/MenuTop';
 
+type MovieProps = {
+  id: string;
+  name?: string;
+  title?: string;
+  overview: string;
+  poster_path: string;
+};
+
+type SectionMoviesProps = {
+  id: number;
+  name: string;
+  movies: MovieProps[];
+};
+
 const Browse: React.FC = () => {
-  const history = useHistory();
+  const [sectionsMovies, setSectionsMovies] = useState<SectionMoviesProps[]>([]);
 
   const { 
     profileList,
     wasCaughtProfile,
-    getProfile
+    getProfile,
+    selectedProfileId
   } = useContext(ProfileContext);
 
   UpdateProfileList(profileList);
 
   useEffect(() => {
     if (!wasCaughtProfile) {
-      if (localStorage.SelectedProfileId !== undefined) {
-
-        Promise.all([
-          userApi.get('users', {
-            params: {
-              id: localStorage.SelectedProfileId
-            }
-          })
-        ])
-          .then(([{ data }]) => {
-            getProfile(data[0]);
-          })
-          .catch(err => {
-            console.log(err);
-          });
-          
-      } else {
-        history.push('/');
-      }
+      userApi.get('users', {
+        params: {
+          id: selectedProfileId
+        }
+      })
+        .then(({ data }) => {
+          getProfile(data[0]);
+        })
+        .catch(err => {
+          console.log(err);
+        });
     }
-  }, [history, wasCaughtProfile, getProfile]);
+
+    if (sectionsMovies.length === 0) {
+      movieApi.get(`/tv/popular?language=pt-BR&api_key=${process.env.REACT_APP_API_KEY}`)
+        .then(({ data }) => {
+          console.log(data.results);
+        });
+    }
+  }, [wasCaughtProfile, getProfile, sectionsMovies, selectedProfileId]);
 
   return (
     <Container>
-      <MenuTop />
+      <MenuTop hasMenuNavigation />
     </Container>
   );
 };
