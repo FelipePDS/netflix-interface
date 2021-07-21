@@ -26,10 +26,14 @@ export type Profile = {
 };
 
 const PrimaryNavigation: React.FC = () => {
-  const { profileList, profile } = useContext(ProfileContext);
+  const { 
+    profileList, 
+    profile,
+    selectedProfileId
+  } = useContext(ProfileContext);
 
   const otherProfiles = profileList.filter(
-    profile => profile.id !== localStorage.SelectedProfileId
+    profile => profile.id !== selectedProfileId
   );
 
   return (
