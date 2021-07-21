@@ -26,7 +26,7 @@ type ProfileContextProviderProps = {
 export function ProfileContextProvider({ children }: ProfileContextProviderProps) {
   const [profile, setProfile] = useState<Profile>({} as Profile);
   const [profileList, setProfileList] = useState<Profile[]>([]);
-  const [selectedProfileId, setSelectedProfileId] = useState('');
+  const [selectedProfileId, setSelectedProfileId] = useState(localStorage.SelectedProfileId || '1');
   const [wasCaughtProfile, setWasCaughtProfile] = useState(false);
 
   function getProfile(profile: Profile) {
