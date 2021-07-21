@@ -1,4 +1,4 @@
-import { useEffect, useContext } from 'react';
+import { useContext } from 'react';
 
 import { ProfileContext } from '../context/ProfileContext';
 import { userApi } from '../services/api';
@@ -12,15 +12,13 @@ type Profile = {
 export function UpdateProfileList(profileList: Profile[]) {
   const { getProfileList } = useContext(ProfileContext);
   
-  useEffect(() => {
-    if (profileList.length === 0) {
-      Promise.all([userApi.get('users')])
-        .then(([{ data }]) => {
-          getProfileList(data);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  }, [profileList, getProfileList]);
+  if (profileList.length === 0) {
+    Promise.all([userApi.get('users')])
+      .then(([{ data }]) => {
+        getProfileList(data);
+      })
+      .catch(err => {
+        console.log(err)
+      });
+  }
 }
