@@ -11,6 +11,13 @@ export const Container = styled.div`
     margin-left: 1.75rem;
   }
 
+  > a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
   > a:hover {
     > .profileAvatar::before {
       content: '';
