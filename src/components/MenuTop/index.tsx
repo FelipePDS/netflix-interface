@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
 import MenuNavigation from '../MenuNavigation';
@@ -14,10 +14,20 @@ type Props = {
 const MenuTop: React.FC<Props> = ({
   hasMenuNavigation
 }) => {
-  
+  const [currentScrollY, setCurrentScrollY] = useState<number>(
+    window.scrollY
+  );
+
+  useEffect(() => {
+    window.onscroll = () => {
+      setCurrentScrollY(window.scrollY);
+    }
+  }, [currentScrollY]);
 
   return (
-    <Container>
+    <Container 
+      className={`${currentScrollY > 0 && 'solidBackground'}`}
+    >
       <Link to="/"><img src={Logo} alt="Netflix Logo" /></Link>
 
       {
