@@ -20,6 +20,7 @@ export default createGlobalStyle`
     --gray-900: #181818;
 
     --link: #e5e5e5;
+    --notification: #b9090b;
   }
 
   * {
@@ -30,7 +31,6 @@ export default createGlobalStyle`
 
   html, body, #root {
     height: 100%;
-    
     user-select: none;
   }
 
