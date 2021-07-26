@@ -19,6 +19,11 @@ import {
   SubmenuListLinks
 } from './styles';
 
+export type NotificationsElement = {
+  hasNotifications?: boolean;
+  numberOfNotifications?: number;
+};
+
 export type Profile = {
   id: string;
   name: string;
@@ -42,7 +47,7 @@ const PrimaryNavigation: React.FC = () => {
         <SearchIcon />
       </NavElement>
 
-      <NavElement>
+      <NavElement hasNotifications numberOfNotifications={4}>
         <NotificationsIcon />
       </NavElement>
 

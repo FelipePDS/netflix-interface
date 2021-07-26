@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Profile } from '.';
+import { NotificationsElement, Profile } from '.';
 
 import { Search } from 'styled-icons/fa-solid';
 import { Notifications } from 'styled-icons/zondicons';
@@ -12,12 +12,41 @@ export const Container = styled.div`
   align-items: center;
 `;
 
-export const NavElement = styled.div`
+export const NavElement = styled.div<NotificationsElement>`
+  position: relative;
   margin: 0 .95rem;
   cursor: pointer;
 
   > svg {
     color: white;
+  }
+
+  &::before {
+    position: absolute;
+    right: -.43em;
+    top: -.53em;
+    z-index: 2;
+    line-height: .8em;
+
+    display: ${({hasNotifications}) => (
+      hasNotifications ? 'inline' : 'none'
+    )};
+
+    min-width: .8em;
+    min-height: .8em;
+    padding: .3em;
+
+    text-align: center;
+
+    font-size: .7em;
+    font-weight: 700;
+    
+    background-color: var(--notification);
+    color: var(--white);
+    border-radius: 50%;
+    content: '${({ numberOfNotifications }) => numberOfNotifications}';
+
+    cursor: pointer;
   }
 `;
 
@@ -26,6 +55,7 @@ export const SearchIcon = styled(Search)`
 `;
 
 export const NotificationsIcon = styled(Notifications)`
+  position: relative;
   width: 1.3rem;
 `;
 
