@@ -18,9 +18,9 @@ const ProfileList: React.FC = () => {
           return (
             <Profile 
               key={profile.id} 
-              profileId={profile.id}
-              profileName={profile.name}
-              profileAvatar={profile.avatar}
+              id={profile.id}
+              name={profile.name}
+              avatar={profile.avatar}
             />
           )
         })}

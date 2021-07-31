@@ -5,7 +5,7 @@ import MenuNavigation from '../MenuNavigation';
 
 import { Container } from './styles';
 
-import Logo from '../../assets/logo.png';
+import Logo from '../../assets/logo.svg';
 
 type Props = {
   hasMenuNavigation?: boolean;

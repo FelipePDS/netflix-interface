@@ -5,16 +5,16 @@ import { ProfileContext } from '../../context/ProfileContext';
 
 import { Container, ProfileAvatar } from './styles';
 
-export type Props = {
-  profileId: string;
-  profileName: string;
-  profileAvatar: string;
-}
+export type Profile = {
+  id: string;
+  name?: string;
+  avatar: string;
+};
 
-const ProfileControl: React.FC<Props> = ({
-  profileId,
-  profileName,
-  profileAvatar
+const ProfileControl: React.FC<Profile> = ({
+  id,
+  name,
+  avatar
 }) => {
 
   const { toggleSelectedProfileId } = useContext(ProfileContext);
@@ -22,18 +22,17 @@ const ProfileControl: React.FC<Props> = ({
   return (
     <Container>
       <Link 
-        onClick={() => toggleSelectedProfileId(profileId)}
+        onClick={() => toggleSelectedProfileId(id)}
         to="/browse"
       >
         <ProfileAvatar 
           className="profileAvatar" 
 
-          profileId={profileId}
-          profileName={profileName}
-          profileAvatar={profileAvatar}
+          id={id}
+          avatar={avatar}
         />
 
-        <span>{profileName}</span>
+        <span>{name}</span>
       </Link>
     </Container>
   );

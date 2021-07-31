@@ -7,6 +7,18 @@ export const Container = styled.div`
   align-items: center;
 
   height: calc(100vh - 8.6rem);
+
+  @media (max-height: 740px) {
+    height: calc(100vh - 5rem);
+  }
+
+  @media (max-height: 650px) {
+    height: calc(100vh - 3rem);
+  }
+
+  @media (max-height: 600px) {
+    height: 100vh;
+  }
 `;
 
 export const ProfileManageButton = styled.div`
@@ -24,6 +36,35 @@ export const ProfileManageButton = styled.div`
     text-transform: uppercase;
 
     border: 1px solid var(--gray-200);
+
+    @media (min-width: 1500px) {
+      font-size: 1.25vw !important;
+      margin: 3.5rem 0 1rem 0;
+    }
+
+    @media (min-width: 1400px) {
+      font-size: 1.25vw !important;
+    }
+
+    @media (min-width: 1550px) {
+      font-size: 1.17vw !important;
+    }
+
+    @media (max-width: 1100px) {
+      margin: 1.4rem 0 1rem 0;
+    }
+
+    @media (max-width: 800px) {
+      font-size: 12px;
+    }
+
+    @media (max-width: 700px) {
+      margin: .8rem 0 1rem 0;
+    }
+
+    @media (max-width: 300px) {
+      font-size: 11px;
+    }
   }
 
   > button:hover {
