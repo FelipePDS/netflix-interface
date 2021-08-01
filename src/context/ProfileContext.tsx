@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from 'react';
+import { createContext, ReactNode, useState, useContext } from 'react';
 
 type Profile = {
   id: string;
@@ -10,11 +10,10 @@ type ProfileContextData = {
   profile: Profile;
   profileList: Profile[];
   selectedProfileId: string;
-  wasCaughtProfile: boolean;
+  wasCaughtSelectedProfile: boolean;
   getProfile: (profile: Profile) => void;
   getProfileList: (list: Profile[]) => void;
   toggleSelectedProfileId: (id: string) => void;
-  toggleWasCaughtProfile: (condition: boolean) => void;
 };
 
 export const ProfileContext = createContext({} as ProfileContextData);
@@ -27,25 +26,21 @@ export function ProfileContextProvider({ children }: ProfileContextProviderProps
   const [profile, setProfile] = useState<Profile>({} as Profile);
   const [profileList, setProfileList] = useState<Profile[]>([]);
   const [selectedProfileId, setSelectedProfileId] = useState(localStorage.SelectedProfileId || '1');
-  const [wasCaughtProfile, setWasCaughtProfile] = useState(false);
+  const [wasCaughtSelectedProfile, setWasCaughtSelectedProfile] = useState(false);
 
   function getProfile(profile: Profile) {
     setProfile(profile);
-    setWasCaughtProfile(true);
+    setWasCaughtSelectedProfile(true);
   };
 
-  function getProfileList(list: Profile[]) {
-    setProfileList(list);
+  function getProfileList(profileList: Profile[]) {
+    setProfileList(profileList);
   };
 
   function toggleSelectedProfileId(id: string) {
     setSelectedProfileId(id);
     localStorage.setItem('SelectedProfileId', id);
-    setWasCaughtProfile(false);
-  };
-
-  function toggleWasCaughtProfile(condition: boolean) {
-    setWasCaughtProfile(condition);
+    setWasCaughtSelectedProfile(false);
   };
 
   return (
@@ -53,13 +48,16 @@ export function ProfileContextProvider({ children }: ProfileContextProviderProps
       profile,
       profileList,
       selectedProfileId,
-      wasCaughtProfile,
+      wasCaughtSelectedProfile,
       getProfile,
       getProfileList,
-      toggleSelectedProfileId,
-      toggleWasCaughtProfile
+      toggleSelectedProfileId
     }}>
       {children}
     </ProfileContext.Provider>
   );
 }
+
+export function useProfileContext() {
+  return useContext(ProfileContext);
+};
