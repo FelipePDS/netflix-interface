@@ -21,6 +21,7 @@ export default createGlobalStyle`
 
     --link: #e5e5e5;
     --notification: #b9090b;
+    --logo-color: #e50914;
   }
 
   * {

@@ -10,6 +10,7 @@ import { Container } from './styles';
 
 import MenuTop from '../../components/MenuTop';
 import FeaturedMovie from '../../components/FeaturedMovie';
+import Load from '../../components/Load';
 
 type MovieGenreRouteProps = {
   name: string;
@@ -86,7 +87,7 @@ const Browse: React.FC = () => {
           const indexSectionMovieFeature = 0;
 
           const randomFeatureMovie = Math.floor(
-            Math.random() * sectionMovieResponses[indexSectionMovieFeature].movies.length - 1
+            Math.random() * sectionMovieResponses[indexSectionMovieFeature].movies.length
           );
 
           updateFeatureMovieIndex(
@@ -106,7 +107,8 @@ const Browse: React.FC = () => {
         (featureMovieIndex.movieIndex === undefined &&
         featureMovieIndex.sectionIndex === undefined)
       );
-    }, 800);
+    }, 1200);
+
   }, [currentLanguage, 
       getProfile,
       sectionMoviesList, 
@@ -122,9 +124,7 @@ const Browse: React.FC = () => {
       {
         isLoad
           ? (
-            <span>
-              <strong>N</strong>
-            </span>
+            <Load />
           )
           : (
             <>
