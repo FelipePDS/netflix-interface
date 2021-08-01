@@ -21,6 +21,20 @@ export const NavElement = styled.div<NotificationsElement>`
     color: white;
   }
 
+  @media (max-width: 750px) {
+    margin-left: .4rem;
+
+    > svg {
+      width: 1rem;
+    }
+  }
+
+  @media (max-width: 300px) {
+    &.notifications {
+      display: none;
+    }
+  }
+
   &::before {
     position: absolute;
     right: -.43em;
@@ -47,6 +61,14 @@ export const NavElement = styled.div<NotificationsElement>`
     content: '${({ numberOfNotifications }) => numberOfNotifications}';
 
     cursor: pointer;
+
+    @media (max-width: 750px) {
+      right: -.4em;
+      top: -.53em;
+
+      min-width: .5em;
+      min-height: .5em;
+    }
   }
 `;
 
@@ -73,6 +95,10 @@ export const NavElementDropdown = styled.div`
   > svg {
     color: white;
     transition: transform .3s;
+
+    @media (max-width: 500px) {
+      display: none;
+    }
   }
 
   &:hover {
@@ -128,6 +154,10 @@ export const HeaderAccountDropdown = styled.div`
   width: 100%;
   padding: .3rem 1.72rem 0 0;
   margin-bottom: -.5rem;
+
+  @media (max-width: 500px) {
+    padding: .3rem .3rem 0 0;
+  }
 `;
 
 export const CaretUpIcon = styled(CaretUp)`

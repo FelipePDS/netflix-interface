@@ -47,7 +47,11 @@ const PrimaryNavigation: React.FC = () => {
         <SearchIcon />
       </NavElement>
 
-      <NavElement hasNotifications numberOfNotifications={4}>
+      <NavElement 
+        className="notifications"
+        hasNotifications 
+        numberOfNotifications={4}
+      >
         <NotificationsIcon />
       </NavElement>
 
