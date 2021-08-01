@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { ProfileContext } from '../../context/ProfileContext';
-import { UpdateProfileList } from '../../utils/profileUtil';
+import { LoadProfileList } from '../../utils/profileUtil';
 
 import { Container } from './styles';
 
@@ -9,9 +8,7 @@ import MenuTop from '../../components/MenuTop/';
 import ProfileControl from '../../components/ProfileControl/';
 
 const Home: React.FC = () => {
-  const { profileList } = useContext(ProfileContext);
-
-  UpdateProfileList(profileList);
+  LoadProfileList();
 
   return (
     <Container>
