@@ -1,6 +1,6 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
 
-type MovieProps = {
+export type MovieProps = {
     id: string;
     name?: string;
     title?: string;
@@ -26,7 +26,6 @@ export type FeatureMovieIndexProps = {
 };
 
 type MovieContextData = {
-    movieProps: MovieProps;
     sectionMoviesList: SectionMovies[];
     featureMovieIndex: FeatureMovieIndexProps;
     updateSectionMoviesList: (sectionMoviesList: SectionMovies[]) => void;
@@ -40,7 +39,6 @@ type MovieContextProviderProps = {
 };
 
 export function MovieContextProvider({ children }: MovieContextProviderProps) {
-    const movieProps = {} as MovieProps;
     const [sectionMoviesList, setSectionMoviesList] = useState<SectionMovies[]>([]);
     const [featureMovieIndex, setFeatureMovieId] = useState<FeatureMovieIndexProps>(
         {} as FeatureMovieIndexProps
@@ -56,7 +54,6 @@ export function MovieContextProvider({ children }: MovieContextProviderProps) {
 
     return (
         <MovieContext.Provider value={{
-            movieProps,
             sectionMoviesList,
             featureMovieIndex,
             updateSectionMoviesList,
@@ -67,6 +64,6 @@ export function MovieContextProvider({ children }: MovieContextProviderProps) {
     );
 }
 
-export const useMovieContext = () => (
-    useContext(MovieContext)
-);
+export function useMovieContext() {
+    return useContext(MovieContext);
+};
