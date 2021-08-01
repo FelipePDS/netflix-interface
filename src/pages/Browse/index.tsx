@@ -1,10 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { ProfileContext } from '../../context/ProfileContext';
+import { useProfileContext } from '../../context/ProfileContext';
 import { useMovieContext } from '../../context/MovieContext';
 
 import { userApi, movieApi } from '../../services/api';
-import { UpdateProfileList } from '../../utils/profileUtil';
+import { LoadProfileList } from '../../utils/profileUtil';
 
 import { Container } from './styles';
 
@@ -20,23 +20,24 @@ const Browse: React.FC = () => {
   const currentLanguage = navigator.language;
 
   const { 
-    profileList,
-    wasCaughtProfile,
+    wasCaughtSelectedProfile,
     getProfile,
     selectedProfileId
-  } = useContext(ProfileContext);
+  } = useProfileContext();
 
   const {
     sectionMoviesList,
-    featureMovieIndex,
     updateSectionMoviesList,
-    updateFeatureMovieIndex
+    updateFeatureMovieIndex,
+    featureMovieIndex
   } = useMovieContext();
 
-  UpdateProfileList(profileList);
+  const [isLoad, setIsLoad] = useState<Boolean>(true);
+
+  LoadProfileList();
 
   useEffect(() => {
-    if (!wasCaughtProfile) {
+    if (!wasCaughtSelectedProfile) {
       userApi.get('users', {
         params: {
           id: selectedProfileId
@@ -82,11 +83,11 @@ const Browse: React.FC = () => {
 
           updateSectionMoviesList(sectionMovieResponses);
 
-          const randomFeatureMovie = Math.floor(
-            Math.random() * sectionMovieResponses[0].movies.length
-          );
-
           const indexSectionMovieFeature = 0;
+
+          const randomFeatureMovie = Math.floor(
+            Math.random() * sectionMovieResponses[indexSectionMovieFeature].movies.length - 1
+          );
 
           updateFeatureMovieIndex(
             indexSectionMovieFeature,
@@ -98,20 +99,41 @@ const Browse: React.FC = () => {
           console.log(err);
         });
     }
+
+    setTimeout(() => {
+      setIsLoad(
+        !(sectionMoviesList.length > 0) ||
+        (featureMovieIndex.movieIndex === undefined &&
+        featureMovieIndex.sectionIndex === undefined)
+      );
+    }, 800);
   }, [currentLanguage, 
       getProfile,
       sectionMoviesList, 
       selectedProfileId, 
-      wasCaughtProfile,
+      wasCaughtSelectedProfile,
       updateSectionMoviesList,
-      updateFeatureMovieIndex]
+      updateFeatureMovieIndex,
+      featureMovieIndex]
   );
 
   return (
     <Container>
-      <MenuTop hasMenuNavigation />
-
-      <FeaturedMovie featuredMovieIndex={featureMovieIndex} />
+      {
+        isLoad
+          ? (
+            <span>
+              <strong>N</strong>
+            </span>
+          )
+          : (
+            <>
+              <MenuTop hasMenuNavigation />
+      
+              <FeaturedMovie />
+            </>
+          )
+      }
     </Container>
   );
 };
