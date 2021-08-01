@@ -19,6 +19,10 @@ export const Container = styled.div`
   @media (max-height: 600px) {
     height: 100vh;
   }
+
+  @media (max-height: 200px) {
+    height: 100%;
+  }
 `;
 
 export const ProfileManageButton = styled.div`
@@ -40,6 +44,7 @@ export const ProfileManageButton = styled.div`
     @media (min-width: 1500px) {
       font-size: 1.25vw !important;
       margin: 3.5rem 0 1rem 0;
+      padding: .72rem 1.7rem;
     }
 
     @media (min-width: 1400px) {
@@ -62,8 +67,17 @@ export const ProfileManageButton = styled.div`
       margin: .8rem 0 1rem 0;
     }
 
-    @media (max-width: 300px) {
+    @media (max-width: 600px) {
       font-size: 11px;
+    }
+
+    @media (max-width: 500px) {
+      font-size: 10.5px;
+    }
+
+    @media (max-width: 300px) {
+      font-size: 7px;
+      margin: .2rem 0 1rem 0;
     }
   }
 

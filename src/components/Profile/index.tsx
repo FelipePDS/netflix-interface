@@ -21,19 +21,21 @@ const ProfileControl: React.FC<Profile> = ({
   
   return (
     <Container>
-      <Link 
-        onClick={() => toggleSelectedProfileId(id)}
-        to="/browse"
-      >
-        <ProfileAvatar 
-          className="profileAvatar" 
+      <li>
+        <Link 
+          onClick={() => toggleSelectedProfileId(id)}
+          to="/browse"
+        >
+          <ProfileAvatar 
+            className="profileAvatar" 
 
-          id={id}
-          avatar={avatar}
-        />
+            id={id}
+            avatar={avatar}
+          />
 
-        <span>{name}</span>
-      </Link>
+          <span>{name}</span>
+        </Link>
+      </li>
     </Container>
   );
 }

@@ -6,8 +6,11 @@ export const Container = styled.div`
   justify-content: center;
   align-items: center;
 
+  text-align: center;
+
   & h1 {
     margin-bottom: 1rem;
+    margin: 1rem .5rem;
 
     font-size: 3.5vw;
     font-weight: 510;
@@ -39,12 +42,25 @@ export const Container = styled.div`
       font-size: 30px;
     }
 
+    @media (max-width: 700px) {
+      margin-bottom: .6rem;
+    }
+
+    @media (max-width: 600px) {
+      margin-bottom: .1rem;
+    }
+
+
     @media (max-width: 400px) {
       font-size: 25px;
     }
 
-    @media (max-width: 250px) {
-      font-size: 22px;
+    @media (max-width: 300px) {
+      font-size: 23px;
+    }
+
+    @media (max-width: 260px) {
+      font-size: 21px;
     }
   }
 `;
@@ -53,6 +69,7 @@ export const ChooseProfile = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
 
-  margin: 1.28rem 0;
+  margin: 1.28rem 2.3rem;
 `;

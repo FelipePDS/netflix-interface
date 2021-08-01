@@ -2,12 +2,14 @@ import styled from 'styled-components';
 
 import { Profile } from '.';
 
-export const Container = styled.div`
-  display: flex;
+export const Container = styled.ul`
+  display: block;
   justify-content: center;
   align-items: center;
 
-  &+div {
+  list-style: none;
+
+  &+ul {
     margin-left: 1.75rem;
 
     @media (max-width: 900px) {
@@ -23,14 +25,14 @@ export const Container = styled.div`
     }
   }
 
-  > a {
+  > li a {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
   }
 
-  > a:hover {
+  > li a:hover {
     > .profileAvatar::before {
       content: '';
 
@@ -51,7 +53,7 @@ export const Container = styled.div`
     }
   }
 
-  > a span {
+  > li a span {
     display: block;
     
     max-width: 10vw;
@@ -64,6 +66,10 @@ export const Container = styled.div`
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+
+    @media (min-width: 1500px) {
+      font-size: 19.5px;
+    }
 
     @media (max-width: 890px) {
       font-size: 12px;
@@ -79,6 +85,10 @@ export const Container = styled.div`
   
     @media (max-width: 400px) {
       max-width: 4rem;
+    }
+
+    @media (max-width: 250px) {
+      max-width: 3.2rem;
     }
   }
 `;
@@ -112,5 +122,10 @@ export const ProfileAvatar = styled.div<Profile>`
   @media (max-width: 400px) {
     min-width: 4rem;
     min-height: 4rem;
+  }
+
+  @media (max-width: 250px) {
+    min-width: 3.2rem;
+    min-height: 3.2rem;
   }
 `;
