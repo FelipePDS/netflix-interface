@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useProfileContext } from '../../context/ProfileContext';
-import { useMovieContext } from '../../context/MovieContext';
+import { FormatedMovieProps, SectionMoviesProps, useMovieContext } from '../../context/MovieContext';
 
 import { userApi, movieApi } from '../../services/api';
 import { LoadProfileList } from '../../utils/profileUtil';
@@ -21,6 +21,7 @@ const Browse: React.FC = () => {
   const currentLanguage = navigator.language;
 
   const { 
+    profileList,
     wasCaughtSelectedProfile,
     getProfile,
     selectedProfileId
@@ -66,21 +67,51 @@ const Browse: React.FC = () => {
       language=${currentLanguage}&api_key=${process.env.REACT_APP_API_KEY}
     `;
 
-    const apiMovieUrls = movieGenreRoutes.map(({ routePath }) => {
+    const loadUrlsMovieApi = movieGenreRoutes.map(({ routePath }) => {
       const url = routePath.concat(movieBaseRoute);
 
       return movieApi.get(url);
     });
 
     if (sectionMoviesList.length === 0) {
-      Promise.all([...apiMovieUrls])
+      Promise.all([...loadUrlsMovieApi])
         .then(responses => {
 
-          const sectionMovieResponses = responses.map((response, index) => ({
-            id: index,
-            name: movieGenreRoutes[index].name,
-            movies: response.data.results
-          }));
+          const sectionMovieResponses: SectionMoviesProps[] = responses.map(
+            (response, index) => {
+              const movieList = response.data.results as FormatedMovieProps[];
+
+              console.log(response.data.results);
+
+              return {
+                id: index,
+                name: movieGenreRoutes[index].name,
+                movies: movieList.map(movie => {
+                  const first_air_year = movie.first_air_date?.split('-')[0];
+                  const rating = `${movie.vote_average * 10}%`;
+
+                  const imagePathBase = 'https://image.tmdb.org/t/p/original';
+                  const backdrop_path_full = imagePathBase + movie.backdrop_path;
+                  const poster_path_full = imagePathBase + movie.poster_path;
+
+                  const seasons = `
+                    ${movie.number_of_seasons} Temporada${
+                      movie.number_of_seasons === 1 ? '' : 's'
+                    }
+                  `;
+
+                  return {
+                    ...movie,
+                    first_air_year,
+                    rating,
+                    backdrop_path_full,
+                    poster_path_full,
+                    seasons
+                  }
+                })
+              }
+            }
+          );
 
           updateSectionMoviesList(sectionMovieResponses);
 
@@ -105,11 +136,13 @@ const Browse: React.FC = () => {
       setIsLoad(
         !(sectionMoviesList.length > 0) ||
         (featureMovieIndex.movieIndex === undefined &&
-        featureMovieIndex.sectionIndex === undefined)
+        featureMovieIndex.sectionIndex === undefined) ||
+        !(profileList.length > 0)
       );
     }, 1200);
 
   }, [currentLanguage, 
+      profileList,
       getProfile,
       sectionMoviesList, 
       selectedProfileId, 

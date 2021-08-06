@@ -1,23 +1,34 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
 
 export type MovieProps = {
+    backdrop_path: string;
+    first_air_date: string;
+    genre_ids: string[];
     id: string;
     name?: string;
-    title?: string;
+    number_of_seasons?: number;
+    original_name?: string;
+    original_title?: string;
     overview: string;
     poster_path: string;
-    imageUrl: string;
-    rating: string;
-    releaseDate: string;
-    seasons?: string;
     runtime?: string;
-    genres: string;
+    title?: string;
+    vote_average: number;
 };
 
-type SectionMovies = {
+export interface FormatedMovieProps extends MovieProps {
+    backdrop_path_full: string;
+    first_air_year: string;
+    genre_names: string;
+    poster_path_full: string;
+    rating: string;
+    seasons?: string;
+};
+
+export type SectionMoviesProps = {
     id: number;
     name: string;
-    movies: MovieProps[];
+    movies: FormatedMovieProps[];
 };
 
 export type FeatureMovieIndexProps = {
@@ -26,9 +37,9 @@ export type FeatureMovieIndexProps = {
 };
 
 type MovieContextData = {
-    sectionMoviesList: SectionMovies[];
+    sectionMoviesList: SectionMoviesProps[];
     featureMovieIndex: FeatureMovieIndexProps;
-    updateSectionMoviesList: (sectionMoviesList: SectionMovies[]) => void;
+    updateSectionMoviesList: (sectionMoviesList: SectionMoviesProps[]) => void;
     updateFeatureMovieIndex: (sectionIndex: number, movieId: number) => void;
 };
 
@@ -39,18 +50,20 @@ type MovieContextProviderProps = {
 };
 
 export function MovieContextProvider({ children }: MovieContextProviderProps) {
-    const [sectionMoviesList, setSectionMoviesList] = useState<SectionMovies[]>([]);
-    const [featureMovieIndex, setFeatureMovieId] = useState<FeatureMovieIndexProps>(
+    const [sectionMoviesList, setSectionMoviesList] = useState<SectionMoviesProps[]>([]);
+    const [featureMovieIndex, setFeatureMovieIndex] = useState<FeatureMovieIndexProps>(
         {} as FeatureMovieIndexProps
     );
 
-    function updateSectionMoviesList(sectionMoviesList: SectionMovies[]) {
+    function updateSectionMoviesList(sectionMoviesList: SectionMoviesProps[]) {
         setSectionMoviesList(sectionMoviesList);
     }
 
     function updateFeatureMovieIndex(sectionIndex: number, movieIndex: number) {
-        setFeatureMovieId({ sectionIndex, movieIndex });
+        setFeatureMovieIndex({ sectionIndex, movieIndex });
     }
+
+    
 
     return (
         <MovieContext.Provider value={{
