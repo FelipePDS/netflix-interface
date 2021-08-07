@@ -1,9 +1,10 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
 
 export type MovieProps = {
+    adult: boolean;
     backdrop_path: string;
     first_air_date: string;
-    genre_ids: string[];
+    genre_ids: (string | undefined)[];
     id: string;
     name?: string;
     number_of_seasons?: number;
@@ -16,10 +17,15 @@ export type MovieProps = {
     vote_average: number;
 };
 
+export type GenreProps = {
+    id: number;
+    name: string;
+}
+
 export interface FormatedMovieProps extends MovieProps {
     backdrop_path_full: string;
     first_air_year: string;
-    genre_names: string;
+    genres: GenreProps[] | (GenreProps | undefined)[];
     poster_path_full: string;
     rating: string;
     seasons?: string;
