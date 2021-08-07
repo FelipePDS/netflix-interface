@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
 
 import { useProfileContext } from '../../context/ProfileContext';
-import { FormatedMovieProps, SectionMoviesProps, useMovieContext } from '../../context/MovieContext';
+import { 
+  GenreProps,
+  FormatedMovieProps, 
+  SectionMoviesProps, 
+  useMovieContext 
+} from '../../context/MovieContext';
 
-import { userApi, movieApi } from '../../services/api';
-import { LoadProfileList } from '../../utils/profileUtil';
+import { formatMovieList } from '../../utils/movieUtil';
+import { 
+  LoadProfileList,
+  UpdateSelectedProfile
+} from '../../utils/profileUtil';
+
+import { movieApi } from '../../services/api';
 
 import { Container } from './styles';
 
@@ -20,13 +30,7 @@ type MovieGenreRouteProps = {
 const Browse: React.FC = () => {
   const currentLanguage = navigator.language;
 
-  const { 
-    profileList,
-    wasCaughtSelectedProfile,
-    getProfile,
-    selectedProfileId
-  } = useProfileContext();
-
+  const { profileList } = useProfileContext();
   const {
     sectionMoviesList,
     updateSectionMoviesList,
@@ -37,22 +41,9 @@ const Browse: React.FC = () => {
   const [isLoad, setIsLoad] = useState<Boolean>(true);
 
   LoadProfileList();
+  UpdateSelectedProfile();
 
   useEffect(() => {
-    if (!wasCaughtSelectedProfile) {
-      userApi.get('users', {
-        params: {
-          id: selectedProfileId
-        }
-      })
-        .then(({ data }) => {
-          getProfile(data[0]);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-
     const movieGenreRoutes : MovieGenreRouteProps[] = [
       { name: 'Em alta', routePath: '/tv/popular?' },
       { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
@@ -74,58 +65,49 @@ const Browse: React.FC = () => {
     });
 
     if (sectionMoviesList.length === 0) {
-      Promise.all([...loadUrlsMovieApi])
-        .then(responses => {
+      movieApi.get(`/genre/list?api_key=${process.env.REACT_APP_API_KEY}`)
+        .then(({ data }) => {
+          return data.genres;
+        })
+        .then((genreList: GenreProps[]) => {
+          Promise.all([...loadUrlsMovieApi])
+            .then(responses => {
 
-          const sectionMovieResponses: SectionMoviesProps[] = responses.map(
-            (response, index) => {
-              const movieList = response.data.results as FormatedMovieProps[];
-
-              console.log(response.data.results);
-
-              return {
-                id: index,
-                name: movieGenreRoutes[index].name,
-                movies: movieList.map(movie => {
-                  const first_air_year = movie.first_air_date?.split('-')[0];
-                  const rating = `${movie.vote_average * 10}%`;
-
-                  const imagePathBase = 'https://image.tmdb.org/t/p/original';
-                  const backdrop_path_full = imagePathBase + movie.backdrop_path;
-                  const poster_path_full = imagePathBase + movie.poster_path;
-
-                  const seasons = `
-                    ${movie.number_of_seasons} Temporada${
-                      movie.number_of_seasons === 1 ? '' : 's'
-                    }
-                  `;
+              const sectionMoviesResponses: SectionMoviesProps[] = responses.map(
+                (response, index) => {
+                  const movieList = response.data.results as FormatedMovieProps[];
 
                   return {
-                    ...movie,
-                    first_air_year,
-                    rating,
-                    backdrop_path_full,
-                    poster_path_full,
-                    seasons
+                    id: index,
+                    name: movieGenreRoutes[index].name,
+                    movies: formatMovieList(movieList, genreList)
                   }
-                })
-              }
-            }
-          );
+                }
+              );
 
-          updateSectionMoviesList(sectionMovieResponses);
+              updateSectionMoviesList(sectionMoviesResponses);
 
-          const indexSectionMovieFeature = 0;
+              const indexSectionMovieFeature = 0;
+              let randomIndexFeatureMovie: number;
 
-          const randomFeatureMovie = Math.floor(
-            Math.random() * sectionMovieResponses[indexSectionMovieFeature].movies.length
-          );
+              do {
+                randomIndexFeatureMovie = Math.floor(
+                  Math.random() * sectionMoviesResponses[indexSectionMovieFeature].movies.length
+                );
+              } while (
+                sectionMoviesResponses[indexSectionMovieFeature]
+                  .movies[randomIndexFeatureMovie].backdrop_path === null
+              );
 
-          updateFeatureMovieIndex(
-            indexSectionMovieFeature,
-            randomFeatureMovie
-          );
+              updateFeatureMovieIndex(
+                indexSectionMovieFeature,
+                randomIndexFeatureMovie
+              );
 
+            })
+            .catch(err => {
+              console.log(err);
+            });
         })
         .catch(err => {
           console.log(err);
@@ -143,10 +125,7 @@ const Browse: React.FC = () => {
 
   }, [currentLanguage, 
       profileList,
-      getProfile,
-      sectionMoviesList, 
-      selectedProfileId, 
-      wasCaughtSelectedProfile,
+      sectionMoviesList,
       updateSectionMoviesList,
       updateFeatureMovieIndex,
       featureMovieIndex]
