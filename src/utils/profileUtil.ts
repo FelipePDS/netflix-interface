@@ -1,18 +1,42 @@
-import { useContext } from 'react';
+import { useEffect } from 'react';
 
-import { ProfileContext } from '../context/ProfileContext';
+import { useProfileContext } from '../context/ProfileContext';
 import { userApi } from '../services/api';
 
 export function LoadProfileList(): void {
   const { 
     profileList,
     getProfileList 
-  } = useContext(ProfileContext);
+  } = useProfileContext();
 
-  if (profileList.length === 0) {
-    userApi.get('users')
+  useEffect(() => {
+    if (profileList.length === 0) {
+      userApi.get('users')
+        .then(({ data }) => {
+          getProfileList(data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
+  }, [profileList, getProfileList]);
+}
+
+export function UpdateSelectedProfile() {
+  const { 
+    wasCaughtSelectedProfile,
+    selectedProfileId,
+    getProfile
+  } = useProfileContext();
+
+  if (!wasCaughtSelectedProfile) {
+    userApi.get('users', {
+      params: {
+        id: selectedProfileId
+      }
+    })
       .then(({ data }) => {
-        getProfileList(data);
+        getProfile(data[0]);
       })
       .catch(err => {
         console.log(err);
