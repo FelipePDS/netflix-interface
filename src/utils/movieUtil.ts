@@ -1,7 +1,16 @@
+import { AxiosResponse } from 'axios';
+
 import { 
     GenreProps,
     FormatedMovieProps
 } from '../context/MovieContext';
+
+import { movieApi } from '../services/api';
+
+type MovieApiRoutePathsProps = {
+    name: string;
+    routePath: string;
+};
 
 function formatMovieList(
     movieList: FormatedMovieProps[],
@@ -43,4 +52,37 @@ function formatMovieList(
     });
 }
 
-export { formatMovieList }
+function requestUrlsMovieApi(
+
+    apiKey: string | undefined,
+    currentLanguage: string,
+    movieApiRoutePaths: MovieApiRoutePathsProps[]
+
+): Promise<AxiosResponse<any>>[] {
+    const movieGenreRoutes : MovieApiRoutePathsProps[] = [
+        { name: 'Em alta', routePath: '/tv/popular?' },
+        { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
+        { name: 'Melhores Avaliados', routePath: '/movie/top_rated?' },
+        { name: 'Lançamentos', routePath: '/movie/now_playing?' },
+        { name: 'Ação', routePath: '/discover/movie?with_genres=28&' },
+        { name: 'Ficção científica', routePath: '/discover/movie?with_genres=878&' },
+        { name: 'Romance', routePath: '/discover/movie?with_genres=10749&' }
+    ];
+  
+    const movieBaseRoute = `
+        language=${currentLanguage}&api_key=${apiKey}
+    `;
+
+    const requests = movieGenreRoutes.map(({ routePath }) => {
+        const url = routePath.concat(movieBaseRoute);
+
+        return movieApi.get(url);
+    });
+
+    return requests;
+}
+
+export { 
+    formatMovieList,
+    requestUrlsMovieApi
+}
