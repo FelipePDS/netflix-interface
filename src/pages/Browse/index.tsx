@@ -4,7 +4,7 @@ import { useProfileContext } from '../../context/ProfileContext';
 import { 
   GenreProps,
   FormatedMovieProps, 
-  SectionMoviesProps, 
+  MovieSectionProps, 
   useMovieContext 
 } from '../../context/MovieContext';
 
@@ -68,7 +68,7 @@ const Browse: React.FC = () => {
           Promise.all([...requestUrlsMovieApi(movieApiRoutePaths)])
             .then(responses => {
 
-              const sectionMoviesResponses: SectionMoviesProps[] = responses.map(
+              const sectionMoviesResponses: MovieSectionProps[] = responses.map(
                 (response, index) => {
                   const movieList = response.data.results as FormatedMovieProps[];
 

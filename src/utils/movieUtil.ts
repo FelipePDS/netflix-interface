@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { 
     GenreProps,
     FormatedMovieProps,
-    SectionMoviesProps
+    MovieSectionProps
 } from '../context/MovieContext';
 
 import { movieApi } from '../services/api';
@@ -73,7 +73,7 @@ function requestUrlsMovieApi(
 }
 
 function raffleFeaturedMovieIndex(
-    sectionMoviesResponses: SectionMoviesProps[],
+    sectionMoviesResponses: MovieSectionProps[],
     sectionFeaturedMovieIndex: number
 ): number {
     let randomFeaturedMovieIndex: number;

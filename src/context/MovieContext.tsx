@@ -31,7 +31,7 @@ export interface FormatedMovieProps extends MovieProps {
     seasons?: string;
 };
 
-export type SectionMoviesProps = {
+export type MovieSectionProps = {
     id: number;
     name: string;
     movies: FormatedMovieProps[];
@@ -43,9 +43,9 @@ export type FeatureMovieIndexProps = {
 };
 
 type MovieContextData = {
-    sectionMoviesList: SectionMoviesProps[];
+    sectionMoviesList: MovieSectionProps[];
     featureMovieIndex: FeatureMovieIndexProps;
-    updateSectionMoviesList: (sectionMoviesList: SectionMoviesProps[]) => void;
+    updateSectionMoviesList: (sectionMoviesList: MovieSectionProps[]) => void;
     updateFeaturedMovieIndex: (sectionIndex: number, movieId: number) => void;
 };
 
@@ -56,12 +56,12 @@ type MovieContextProviderProps = {
 };
 
 export function MovieContextProvider({ children }: MovieContextProviderProps) {
-    const [sectionMoviesList, setSectionMoviesList] = useState<SectionMoviesProps[]>([]);
+    const [sectionMoviesList, setSectionMoviesList] = useState<MovieSectionProps[]>([]);
     const [featureMovieIndex, setFeatureMovieIndex] = useState<FeatureMovieIndexProps>(
         {} as FeatureMovieIndexProps
     );
 
-    function updateSectionMoviesList(sectionMoviesList: SectionMoviesProps[]) {
+    function updateSectionMoviesList(sectionMoviesList: MovieSectionProps[]) {
         setSectionMoviesList(sectionMoviesList);
     }
 
