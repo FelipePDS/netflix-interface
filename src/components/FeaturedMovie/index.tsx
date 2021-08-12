@@ -19,7 +19,7 @@ import {
 
 const FeaturedMovie: React.FC = () => {
     const {
-        sectionMoviesList,
+        movieSectionList,
         featureMovieIndex
     } = useMovieContext();
 
@@ -29,11 +29,11 @@ const FeaturedMovie: React.FC = () => {
 
     useEffect(() => {
         setFeaturedMovie(
-            sectionMoviesList[featureMovieIndex.sectionIndex]
+            movieSectionList[featureMovieIndex.sectionIndex]
             .movies[featureMovieIndex.movieIndex]
         );
 
-    }, [sectionMoviesList, featureMovieIndex]);
+    }, [movieSectionList, featureMovieIndex]);
 
     return (
         <Container 

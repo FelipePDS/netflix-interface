@@ -43,7 +43,7 @@ export type FeatureMovieIndexProps = {
 };
 
 type MovieContextData = {
-    sectionMoviesList: MovieSectionProps[];
+    movieSectionList: MovieSectionProps[];
     featureMovieIndex: FeatureMovieIndexProps;
     updateSectionMoviesList: (sectionMoviesList: MovieSectionProps[]) => void;
     updateFeaturedMovieIndex: (sectionIndex: number, movieId: number) => void;
@@ -56,13 +56,13 @@ type MovieContextProviderProps = {
 };
 
 export function MovieContextProvider({ children }: MovieContextProviderProps) {
-    const [sectionMoviesList, setSectionMoviesList] = useState<MovieSectionProps[]>([]);
+    const [movieSectionList, setMovieSectionList] = useState<MovieSectionProps[]>([]);
     const [featureMovieIndex, setFeatureMovieIndex] = useState<FeatureMovieIndexProps>(
         {} as FeatureMovieIndexProps
     );
 
-    function updateSectionMoviesList(sectionMoviesList: MovieSectionProps[]) {
-        setSectionMoviesList(sectionMoviesList);
+    function updateSectionMoviesList(movieSectionList: MovieSectionProps[]) {
+        setMovieSectionList(movieSectionList);
     }
 
     function updateFeaturedMovieIndex(sectionIndex: number, movieIndex: number) {
@@ -71,7 +71,7 @@ export function MovieContextProvider({ children }: MovieContextProviderProps) {
 
     return (
         <MovieContext.Provider value={{
-            sectionMoviesList,
+            movieSectionList,
             featureMovieIndex,
             updateSectionMoviesList,
             updateFeaturedMovieIndex

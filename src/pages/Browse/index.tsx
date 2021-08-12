@@ -37,7 +37,7 @@ const Browse: React.FC = () => {
 
   const { profileList } = useProfileContext();
   const {
-    sectionMoviesList,
+    movieSectionList,
     updateSectionMoviesList,
     updateFeaturedMovieIndex,
     featureMovieIndex
@@ -47,7 +47,7 @@ const Browse: React.FC = () => {
   UpdateSelectedProfile();
 
   useEffect(() => {
-    if (sectionMoviesList.length === 0) {
+    if (movieSectionList.length === 0) {
       const apiKey = process.env.REACT_APP_API_KEY;
       
       const movieApiRoutePaths : MovieGenreRouteProps[] = [
@@ -68,7 +68,7 @@ const Browse: React.FC = () => {
           Promise.all([...requestUrlsMovieApi(movieApiRoutePaths)])
             .then(responses => {
 
-              const sectionMoviesResponses: MovieSectionProps[] = responses.map(
+              const movieSectionListResponses: MovieSectionProps[] = responses.map(
                 (response, index) => {
                   const movieList = response.data.results as FormatedMovieProps[];
 
@@ -80,11 +80,11 @@ const Browse: React.FC = () => {
                 }
               );
 
-              updateSectionMoviesList(sectionMoviesResponses);
+              updateSectionMoviesList(movieSectionListResponses);
 
               const sectionFeaturedMovieIndex = 0;
               const randomFeaturedMovieIndex = raffleFeaturedMovieIndex(
-                sectionMoviesResponses, sectionFeaturedMovieIndex
+                movieSectionListResponses, sectionFeaturedMovieIndex
               );
 
               updateFeaturedMovieIndex(
@@ -101,7 +101,7 @@ const Browse: React.FC = () => {
 
     setTimeout(() => {
       setIsLoad(
-        !(sectionMoviesList.length > 0) ||
+        !(movieSectionList.length > 0) ||
         (featureMovieIndex.movieIndex === undefined &&
         featureMovieIndex.sectionIndex === undefined) ||
         !(profileList.length > 0)
@@ -109,7 +109,7 @@ const Browse: React.FC = () => {
     }, 1200);
 
   }, [profileList,
-      sectionMoviesList,
+      movieSectionList,
       updateSectionMoviesList,
       updateFeaturedMovieIndex,
       featureMovieIndex]
