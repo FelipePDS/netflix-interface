@@ -8,11 +8,16 @@ import {
   useMovieContext 
 } from '../../context/MovieContext';
 
-import { formatMovieList } from '../../utils/movieUtil';
 import { 
   LoadProfileList,
   UpdateSelectedProfile
 } from '../../utils/profileUtil';
+
+import { 
+  formatMovieList,
+  requestUrlsMovieApi,
+  raffleFeaturedMovieIndex
+} from '../../utils/movieUtil';
 
 import { movieApi } from '../../services/api';
 
@@ -28,49 +33,39 @@ type MovieGenreRouteProps = {
 };
 
 const Browse: React.FC = () => {
-  const currentLanguage = navigator.language;
+    const [isLoad, setIsLoad] = useState<Boolean>(true);
 
   const { profileList } = useProfileContext();
   const {
     sectionMoviesList,
     updateSectionMoviesList,
-    updateFeatureMovieIndex,
+    updateFeaturedMovieIndex,
     featureMovieIndex
   } = useMovieContext();
-
-  const [isLoad, setIsLoad] = useState<Boolean>(true);
 
   LoadProfileList();
   UpdateSelectedProfile();
 
   useEffect(() => {
-    const movieGenreRoutes : MovieGenreRouteProps[] = [
-      { name: 'Em alta', routePath: '/tv/popular?' },
-      { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
-      { name: 'Melhores Avaliados', routePath: '/movie/top_rated?' },
-      { name: 'Lançamentos', routePath: '/movie/now_playing?' },
-      { name: 'Ação', routePath: '/discover/movie?with_genres=28&' },
-      { name: 'Ficção científica', routePath: '/discover/movie?with_genres=878&' },
-      { name: 'Romance', routePath: '/discover/movie?with_genres=10749&' }
-    ];
-
-    const movieBaseRoute = `
-      language=${currentLanguage}&api_key=${process.env.REACT_APP_API_KEY}
-    `;
-
-    const loadUrlsMovieApi = movieGenreRoutes.map(({ routePath }) => {
-      const url = routePath.concat(movieBaseRoute);
-
-      return movieApi.get(url);
-    });
-
     if (sectionMoviesList.length === 0) {
-      movieApi.get(`/genre/list?api_key=${process.env.REACT_APP_API_KEY}`)
+      const apiKey = process.env.REACT_APP_API_KEY;
+      
+      const movieApiRoutePaths : MovieGenreRouteProps[] = [
+        { name: 'Em alta', routePath: '/tv/popular?' },
+        { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
+        { name: 'Melhores Avaliados', routePath: '/movie/top_rated?' },
+        { name: 'Lançamentos', routePath: '/movie/now_playing?' },
+        { name: 'Ação', routePath: '/discover/movie?with_genres=28&' },
+        { name: 'Ficção científica', routePath: '/discover/movie?with_genres=878&' },
+        { name: 'Romance', routePath: '/discover/movie?with_genres=10749&' }
+      ];
+
+      movieApi.get(`/genre/list?api_key=${apiKey}`)
         .then(({ data }) => {
           return data.genres;
         })
         .then((genreList: GenreProps[]) => {
-          Promise.all([...loadUrlsMovieApi])
+          Promise.all([...requestUrlsMovieApi(movieApiRoutePaths)])
             .then(responses => {
 
               const sectionMoviesResponses: SectionMoviesProps[] = responses.map(
@@ -79,7 +74,7 @@ const Browse: React.FC = () => {
 
                   return {
                     id: index,
-                    name: movieGenreRoutes[index].name,
+                    name: movieApiRoutePaths[index].name,
                     movies: formatMovieList(movieList, genreList)
                   }
                 }
@@ -87,27 +82,17 @@ const Browse: React.FC = () => {
 
               updateSectionMoviesList(sectionMoviesResponses);
 
-              const indexSectionMovieFeature = 0;
-              let randomIndexFeatureMovie: number;
-
-              do {
-                randomIndexFeatureMovie = Math.floor(
-                  Math.random() * sectionMoviesResponses[indexSectionMovieFeature].movies.length
-                );
-              } while (
-                sectionMoviesResponses[indexSectionMovieFeature]
-                  .movies[randomIndexFeatureMovie].backdrop_path === null
+              const sectionFeaturedMovieIndex = 0;
+              const randomFeaturedMovieIndex = raffleFeaturedMovieIndex(
+                sectionMoviesResponses, sectionFeaturedMovieIndex
               );
 
-              updateFeatureMovieIndex(
-                indexSectionMovieFeature,
-                randomIndexFeatureMovie
+              updateFeaturedMovieIndex(
+                sectionFeaturedMovieIndex,
+                randomFeaturedMovieIndex
               );
 
             })
-            .catch(err => {
-              console.log(err);
-            });
         })
         .catch(err => {
           console.log(err);
@@ -123,11 +108,10 @@ const Browse: React.FC = () => {
       );
     }, 1200);
 
-  }, [currentLanguage, 
-      profileList,
+  }, [profileList,
       sectionMoviesList,
       updateSectionMoviesList,
-      updateFeatureMovieIndex,
+      updateFeaturedMovieIndex,
       featureMovieIndex]
   );
 
