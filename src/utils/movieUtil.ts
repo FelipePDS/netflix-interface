@@ -2,7 +2,8 @@ import { AxiosResponse } from 'axios';
 
 import { 
     GenreProps,
-    FormatedMovieProps
+    FormatedMovieProps,
+    SectionMoviesProps
 } from '../context/MovieContext';
 
 import { movieApi } from '../services/api';
@@ -26,17 +27,17 @@ function formatMovieList(
 
         const seasons = `
             ${movie.number_of_seasons} Temporada${
-            movie.number_of_seasons === 1 ? '' : 's'
+                movie.number_of_seasons === 1 ? '' : 's'
             }
         `;
 
         const genres = movie.genre_ids.map(genreId => (
             genreList.find(({ id, name }) => (
-            id === Number(genreId)
-                && {
-                id,
-                name
-                }
+                id === Number(genreId)
+                    && {
+                        id,
+                        name
+                    }
             ))
         ));
 
@@ -53,27 +54,16 @@ function formatMovieList(
 }
 
 function requestUrlsMovieApi(
-
-    apiKey: string | undefined,
-    currentLanguage: string,
     movieApiRoutePaths: MovieApiRoutePathsProps[]
-
 ): Promise<AxiosResponse<any>>[] {
-    const movieGenreRoutes : MovieApiRoutePathsProps[] = [
-        { name: 'Em alta', routePath: '/tv/popular?' },
-        { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
-        { name: 'Melhores Avaliados', routePath: '/movie/top_rated?' },
-        { name: 'Lançamentos', routePath: '/movie/now_playing?' },
-        { name: 'Ação', routePath: '/discover/movie?with_genres=28&' },
-        { name: 'Ficção científica', routePath: '/discover/movie?with_genres=878&' },
-        { name: 'Romance', routePath: '/discover/movie?with_genres=10749&' }
-    ];
+    const currentLanguage = navigator.language;
+    const apiKey = process.env.REACT_APP_API_KEY;
   
     const movieBaseRoute = `
         language=${currentLanguage}&api_key=${apiKey}
     `;
 
-    const requests = movieGenreRoutes.map(({ routePath }) => {
+    const requests = movieApiRoutePaths.map(({ routePath }) => {
         const url = routePath.concat(movieBaseRoute);
 
         return movieApi.get(url);
@@ -82,7 +72,26 @@ function requestUrlsMovieApi(
     return requests;
 }
 
+function raffleFeaturedMovieIndex(
+    sectionMoviesResponses: SectionMoviesProps[],
+    sectionFeaturedMovieIndex: number
+): number {
+    let randomFeaturedMovieIndex: number;
+
+    do {
+    randomFeaturedMovieIndex = Math.floor(
+        Math.random() * sectionMoviesResponses[sectionFeaturedMovieIndex].movies.length
+    );
+    } while (
+    sectionMoviesResponses[sectionFeaturedMovieIndex]
+        .movies[randomFeaturedMovieIndex].backdrop_path === null
+    );
+
+    return randomFeaturedMovieIndex;
+}
+
 export { 
     formatMovieList,
-    requestUrlsMovieApi
+    requestUrlsMovieApi,
+    raffleFeaturedMovieIndex
 }
