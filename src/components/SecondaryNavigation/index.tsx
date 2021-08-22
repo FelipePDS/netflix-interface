@@ -43,8 +43,18 @@ const PrimaryNavigation: React.FC = () => {
 
   return (
     <Container>
-      <NavElement>
-        <SearchIcon />
+      <NavElement className="search-container">
+        <div className="search-button">
+          <SearchIcon />
+        </div>
+        
+        <div className="search-input">
+          <SearchIcon />
+          <input 
+            type="text" 
+            placeholder="Títulos, gente e gêneros..."
+          />
+        </div>
       </NavElement>
 
       <NavElement 
@@ -88,29 +98,21 @@ const PrimaryNavigation: React.FC = () => {
               ))}
 
               <li>
-                <Link to='/'>
-                  Gerenciar perfis
-                </Link>
+                <Link to='/'>Gerenciar perfis</Link>
               </li>
             </SubMenuListProfile>
 
             <SubmenuListLinks>
               <li>
-                <Link to='/'>
-                  Conta
-                </Link>
+                <Link to='/'>Conta</Link>
               </li>
 
               <li>
-                <Link to='/'>
-                  Centro de ajuda
-                </Link>
+                <Link to='/'>Centro de ajuda</Link>
               </li>
 
               <li>
-                <Link to='/'>
-                  Sair da Netflix
-                </Link>
+                <Link to='/'>Sair da Netflix</Link>
               </li>
             </SubmenuListLinks>
           </BodyAccountDropdown>

@@ -22,16 +22,27 @@ export const NavElement = styled.div<NotificationsElement>`
   }
 
   @media (max-width: 750px) {
-    margin-left: .4rem;
+    margin: 0 .65rem;
 
-    > svg {
+    > svg,
+    > .search-button svg {
       width: 1rem;
     }
   }
 
+  @media (max-width: 500px) {
+    margin: 0 .5rem;
+  }
+
   @media (max-width: 300px) {
+    margin: 0 .2rem;
+
     &.notifications {
       display: none;
+    }
+
+    > .search-button svg {
+      width: 5vw;
     }
   }
 
@@ -68,6 +79,52 @@ export const NavElement = styled.div<NotificationsElement>`
 
       min-width: .5em;
       min-height: .5em;
+    }
+  }
+
+  &.search-container .search-button {
+    display: flex;
+  }
+
+  &.search-container .search-input {
+    display: none;
+    align-items: center;
+
+    width: 15.5rem;
+    height: 2.1rem;
+    padding: 0 .5rem;
+    gap: .7rem;
+
+    background-color: var(--black-transparent);
+    border: 1px solid var(--white);
+
+    > input {
+      width: 100%;
+      height: 100%;
+      background-color: transparent;
+      color: white;
+    }
+  }
+
+  &.search-container:hover {
+    &.search-container .search-button {
+      display: none;
+      background-color: black;
+    }
+
+    &.search-container .search-input {
+      display: flex;
+      animation: display-input .3s;
+    }
+
+    @keyframes display-input {
+      from {
+        width: 3rem;
+      }
+
+      to {
+        width: 16.5rem;
+      }
     }
   }
 `;
@@ -122,6 +179,11 @@ export const ProfileAvatar = styled.div<Profile>`
   background: var(--gray-750);
   background-image: url(${profile => profile.avatar});
   background-size: cover;
+
+  @media (max-width: 300px) {
+    width: 7vw;
+    height: 7vw;
+  }
 `;
 
 export const CaretDownIcon = styled(CaretDown)`
@@ -172,6 +234,7 @@ export const BodyAccountDropdown = styled.div`
   align-items: center;
 
   width: 100%;
+  z-index: 3;
 
   background-color: var(--black-transparent);
   border: 1px solid var(--gray-750);
