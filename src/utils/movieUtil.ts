@@ -3,7 +3,7 @@ import { AxiosResponse } from 'axios';
 import { 
     GenreProps,
     FormatedMovieProps,
-    MovieSectionProps
+    SectionMovieProps
 } from '../context/MovieContext';
 
 import { movieApi } from '../services/api';
@@ -73,18 +73,18 @@ function requestUrlsMovieApi(
 }
 
 function raffleFeaturedMovieIndex(
-    sectionMoviesResponses: MovieSectionProps[],
+    sectionMoviesResponses: SectionMovieProps[],
     sectionFeaturedMovieIndex: number
 ): number {
     let randomFeaturedMovieIndex: number;
 
     do {
-    randomFeaturedMovieIndex = Math.floor(
-        Math.random() * sectionMoviesResponses[sectionFeaturedMovieIndex].movies.length
-    );
+        randomFeaturedMovieIndex = Math.floor(
+            Math.random() * sectionMoviesResponses[sectionFeaturedMovieIndex].movies.length
+        );
     } while (
-    sectionMoviesResponses[sectionFeaturedMovieIndex]
-        .movies[randomFeaturedMovieIndex].backdrop_path === null
+        sectionMoviesResponses[sectionFeaturedMovieIndex]
+            .movies[randomFeaturedMovieIndex].backdrop_path === null
     );
 
     return randomFeaturedMovieIndex;

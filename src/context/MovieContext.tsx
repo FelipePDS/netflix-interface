@@ -31,21 +31,21 @@ export interface FormatedMovieProps extends MovieProps {
     seasons?: string;
 };
 
-export type MovieSectionProps = {
+export type SectionMovieProps = {
     id: number;
     name: string;
     movies: FormatedMovieProps[];
 };
 
-export type FeatureMovieIndexProps = {
+export type FeaturedMovieIndexProps = {
     sectionIndex: number;
     movieIndex: number;
 };
 
 type MovieContextData = {
-    movieSectionList: MovieSectionProps[];
-    featureMovieIndex: FeatureMovieIndexProps;
-    updateSectionMoviesList: (sectionMoviesList: MovieSectionProps[]) => void;
+    sectionMovieList: SectionMovieProps[];
+    featuredMovieIndex: FeaturedMovieIndexProps;
+    updateSectionMoviesList: (sectionMoviesList: SectionMovieProps[]) => void;
     updateFeaturedMovieIndex: (sectionIndex: number, movieId: number) => void;
 };
 
@@ -56,23 +56,23 @@ type MovieContextProviderProps = {
 };
 
 export function MovieContextProvider({ children }: MovieContextProviderProps) {
-    const [movieSectionList, setMovieSectionList] = useState<MovieSectionProps[]>([]);
-    const [featureMovieIndex, setFeatureMovieIndex] = useState<FeatureMovieIndexProps>(
-        {} as FeatureMovieIndexProps
+    const [sectionMovieList, setSectionMovieList] = useState<SectionMovieProps[]>([]);
+    const [featuredMovieIndex, setFeaturedMovieIndex] = useState<FeaturedMovieIndexProps>(
+        {} as FeaturedMovieIndexProps
     );
 
-    function updateSectionMoviesList(movieSectionList: MovieSectionProps[]) {
-        setMovieSectionList(movieSectionList);
+    function updateSectionMoviesList(movieSectionList: SectionMovieProps[]) {
+        setSectionMovieList(movieSectionList);
     }
 
     function updateFeaturedMovieIndex(sectionIndex: number, movieIndex: number) {
-        setFeatureMovieIndex({ sectionIndex, movieIndex });
+        setFeaturedMovieIndex({ sectionIndex, movieIndex });
     }
 
     return (
         <MovieContext.Provider value={{
-            movieSectionList,
-            featureMovieIndex,
+            sectionMovieList,
+            featuredMovieIndex,
             updateSectionMoviesList,
             updateFeaturedMovieIndex
         }}>

@@ -4,7 +4,7 @@ import { useProfileContext } from '../../context/ProfileContext';
 import { 
   GenreProps,
   FormatedMovieProps, 
-  MovieSectionProps, 
+  SectionMovieProps, 
   useMovieContext 
 } from '../../context/MovieContext';
 
@@ -21,11 +21,16 @@ import {
 
 import { movieApi } from '../../services/api';
 
-import { Container } from './styles';
+import { 
+  Container,
+  SectionMovieListContainer
+} from './styles';
 
+import Load from '../../components/Load';
 import MenuTop from '../../components/MenuTop';
 import FeaturedMovie from '../../components/FeaturedMovie';
-import Load from '../../components/Load';
+import SectionMovie from '../../components/SectionMovie';
+import Footer from '../../components/Footer';
 
 type MovieGenreRouteProps = {
   name: string;
@@ -33,23 +38,23 @@ type MovieGenreRouteProps = {
 };
 
 const Browse: React.FC = () => {
-    const [isLoad, setIsLoad] = useState<Boolean>(true);
+  const [isLoad, setIsLoad] = useState<Boolean>(true);
 
   const { profileList } = useProfileContext();
   const {
-    movieSectionList,
+    sectionMovieList,
     updateSectionMoviesList,
     updateFeaturedMovieIndex,
-    featureMovieIndex
+    featuredMovieIndex
   } = useMovieContext();
 
   LoadProfileList();
   UpdateSelectedProfile();
 
   useEffect(() => {
-    if (movieSectionList.length === 0) {
+    async function getSectionMovieList() {
       const apiKey = process.env.REACT_APP_API_KEY;
-      
+    
       const movieApiRoutePaths : MovieGenreRouteProps[] = [
         { name: 'Em alta', routePath: '/tv/popular?' },
         { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
@@ -60,59 +65,70 @@ const Browse: React.FC = () => {
         { name: 'Romance', routePath: '/discover/movie?with_genres=10749&' }
       ];
 
-      movieApi.get(`/genre/list?api_key=${apiKey}`)
-        .then(({ data }) => {
-          return data.genres;
-        })
-        .then((genreList: GenreProps[]) => {
-          Promise.all([...requestUrlsMovieApi(movieApiRoutePaths)])
-            .then(responses => {
+      const genreResponses = await movieApi.get(
+        `/genre/list?api_key=${apiKey}`
+      );
 
-              const movieSectionListResponses: MovieSectionProps[] = responses.map(
-                (response, index) => {
-                  const movieList = response.data.results as FormatedMovieProps[];
+      const genreList: GenreProps[] = genreResponses.data.genres;
 
-                  return {
-                    id: index,
-                    name: movieApiRoutePaths[index].name,
-                    movies: formatMovieList(movieList, genreList)
-                  }
-                }
-              );
+      Promise.all([...requestUrlsMovieApi(movieApiRoutePaths)])
+        .then(responses => {
 
-              updateSectionMoviesList(movieSectionListResponses);
+          const sectionMovieListResponses: SectionMovieProps[] = responses.map(
+            (response, index) => {
+              const movieList: FormatedMovieProps[] = response.data.results;
 
-              const sectionFeaturedMovieIndex = 0;
-              const randomFeaturedMovieIndex = raffleFeaturedMovieIndex(
-                movieSectionListResponses, sectionFeaturedMovieIndex
-              );
+              return {
+                id: index,
+                name: movieApiRoutePaths[index].name,
+                movies: formatMovieList(movieList, genreList)
+              }
+            }
+          );
 
-              updateFeaturedMovieIndex(
-                sectionFeaturedMovieIndex,
-                randomFeaturedMovieIndex
-              );
+          updateSectionMoviesList(sectionMovieListResponses);
 
-            })
+          const sectionFeaturedMovieIndex = 0;
+          const randomFeaturedMovieIndex = raffleFeaturedMovieIndex(
+            sectionMovieListResponses, sectionFeaturedMovieIndex
+          );
+
+          updateFeaturedMovieIndex(
+            sectionFeaturedMovieIndex, randomFeaturedMovieIndex
+          );
+
         })
         .catch(err => {
           console.log(err);
         });
     }
 
+    if (sectionMovieList.length === 0) {
+      getSectionMovieList();
+    }
+
+    const hasSectionMovieListLoaded: boolean = sectionMovieList.length > 0;
+
+    const hasFeaturedMovieLoaded: boolean = featuredMovieIndex.movieIndex !== undefined 
+      && featuredMovieIndex.sectionIndex !== undefined;
+
+    const hasProfileListLoaded: boolean = profileList.length > 0;
+
     setTimeout(() => {
       setIsLoad(
-        !(movieSectionList.length > 0) ||
-        (featureMovieIndex.movieIndex === undefined &&
-        featureMovieIndex.sectionIndex === undefined) ||
-        !(profileList.length > 0)
+        (
+          hasSectionMovieListLoaded &&
+          hasFeaturedMovieLoaded &&
+          hasProfileListLoaded
+        ) && false
       );
     }, 1200);
 
   }, [profileList,
-      movieSectionList,
+      sectionMovieList,
       updateSectionMoviesList,
       updateFeaturedMovieIndex,
-      featureMovieIndex]
+      featuredMovieIndex]
   );
 
   return (
@@ -127,6 +143,19 @@ const Browse: React.FC = () => {
               <MenuTop hasMenuNavigation />
       
               <FeaturedMovie />
+
+              <SectionMovieListContainer>
+                {
+                  sectionMovieList.map((({ id }) => (
+                    <SectionMovie 
+                      key={id} 
+                      sectionMovieId={id}
+                    />
+                  )))
+                }
+              </SectionMovieListContainer>
+
+              <Footer />
             </>
           )
       }
