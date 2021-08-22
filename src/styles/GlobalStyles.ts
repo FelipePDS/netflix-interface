@@ -39,13 +39,15 @@ export default createGlobalStyle`
   html, body, #root {
     height: 100%;
     user-select: none;
+    background: var(--primary);
+    color: var(--white);
   }
 
   *, button, input {
-      border: 0;
-      outline: 0;
+    border: 0;
+    outline: 0;
 
-      font-family: 'Netflix Sans','Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Netflix Sans','Helvetica Neue', Helvetica, Arial, sans-serif;
   }
 
   button {
@@ -54,5 +56,16 @@ export default createGlobalStyle`
 
   a {
     text-decoration: none;
+  }
+
+  ::-webkit-scrollbar {
+    background-color: #202324;
+    color: #aba499;
+  }
+  ::-webkit-scrollbar-corner {
+      background-color: #181a1b;
+  }
+  ::-webkit-scrollbar-thumb {
+      background-color: #454a4d;
   }
 `;
