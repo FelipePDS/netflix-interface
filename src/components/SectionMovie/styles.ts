@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
 import { AngleRight } from 'styled-icons/fa-solid';
+import { ChevronForward } from 'styled-icons/ionicons-sharp';
 
 export const Container = styled.div`
-  width: 100%;
+  position: relative;
   margin-bottom: 3.3vw;
+  width: 100%;
 
   &:hover {
     .view-all-content {
@@ -35,9 +37,7 @@ export const SectionTitle = styled.div`
 
       > svg {
         width: .7vw;
-        margin-left: .18rem;
-
-        transition: .3s;
+        margin: -2px 0 0 .18rem;
       }
     }
 
@@ -49,26 +49,25 @@ export const SectionTitle = styled.div`
 
         > strong {
           display: inline;
-
-          animation: fadeRight 750ms;
-
-          @keyframes fadeRight {
-            from {
-              opacity: 0;
-              margin-left: -1rem;
-            }
-
-            to {
-              opacity: 1;
-              margin-left: 0;
-            }
-          }
         }
 
         svg {
           width: .5vw;
-          margin-left: .2rem;
-          margin-bottom: -2px;
+          margin: 0 0 -2px .2rem;
+        }
+
+        animation: fadeRight 750ms;
+
+        @keyframes fadeRight {
+          from {
+            opacity: 0;
+            margin-left: -.5rem;
+          }
+
+          to {
+            opacity: 1;
+            margin-left: 1.1rem;
+          }
         }
       }
     }
@@ -78,9 +77,80 @@ export const SectionTitle = styled.div`
 export const AngleRightIcon = styled(AngleRight)`
 `;
 
+export const Wrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  width: 100%;
+  overflow-x: hidden;
+
+  &:hover {
+    .handleNextIcon {
+      visibility: visible;
+    }
+  }
+`;
+
+export const PaginationIndicator = styled.ul`
+  position: absolute;
+  right: 62px;
+  top: 0;
+  margin: -24px 0 12px 0;
+
+  > li {
+    
+  }
+`;
+
 export const SectionContent = styled.section`
   display: flex;
   align-items: center;
 
   gap: 4px;
+`;
+
+export const HandleNext = styled.span`
+  position: absolute;
+  right: 0;
+  z-index: 6;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  height: 100%;
+  width: 52px;
+  
+  background-color: var(--primary-transparent-50);
+  color: var(--white);
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+
+  cursor: pointer;
+
+  > svg {
+    visibility: hidden;
+    width: 40px;
+    z-index: 7;
+
+    transform-origin: 45% 50%;
+    -webkit-transition: -webkit-transform .1s ease-out 0s;
+    transition: -webkit-transform .1s ease-out 0s;
+    -o-transition: -o-transform .1s ease-out 0s;
+    -moz-transition: transform .1s ease-out 0s,-moz-transform .1s ease-out 0s;
+    transition: transform .1s ease-out 0s;
+    transition: transform .1s ease-out 0s,-webkit-transform .1s ease-out 0s,-moz-transform .1s ease-out 0s,-o-transform .1s ease-out 0s;
+  }
+  
+  &:hover {
+    background-color: var(--primary-transparent-70);
+
+    > svg {
+      transform: scale(1.25);
+    }
+  }
+`;
+
+export const ChevronForwardIcon = styled(ChevronForward)`
 `;

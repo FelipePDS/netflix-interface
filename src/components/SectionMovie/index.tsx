@@ -10,7 +10,11 @@ import {
   Container,
   SectionTitle,
   AngleRightIcon,
-  SectionContent
+  Wrapper,
+  PaginationIndicator,
+  SectionContent,
+  HandleNext,
+  ChevronForwardIcon
 } from './styles';
 
 import MovieCard from '../MovieCard';
@@ -41,16 +45,24 @@ const SectionMovie: React.FC<Props> = ({
         </Link>
       </SectionTitle>
 
-      <SectionContent>
-        {
-          sectionMovie.movies.map(movie => (
-            <MovieCard
-              key={movie.id}
-              {...movie}
-            />
-          ))
-        }
-      </SectionContent>
+      <Wrapper>
+        <PaginationIndicator />
+
+        <SectionContent>
+          {
+            sectionMovie.movies.flatMap(movie => (
+              <MovieCard
+                key={movie.id}
+                {...movie}
+              />
+            ))
+          }
+        </SectionContent>
+
+        <HandleNext>
+          <ChevronForwardIcon className="handleNextIcon" />
+        </HandleNext>
+      </Wrapper>
     </Container>
   );
 }
