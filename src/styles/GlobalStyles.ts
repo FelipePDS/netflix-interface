@@ -18,8 +18,10 @@ export default createGlobalStyle`
     --gray-10: #d2d2d2;
     --gray-50: #ffffffb3;
     --gray-100: #ffffff4d;
+    --gray-150: #aaaaaa;
     --gray-200: #808080;
     --gray-250: #777;
+    --gray-400: #4D4D4D;
     --gray-700: #333;
     --gray-750: #2a2a2a;
     --gray-900: #181818;
