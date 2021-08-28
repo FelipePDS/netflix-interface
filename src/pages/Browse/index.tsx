@@ -146,10 +146,10 @@ const Browse: React.FC = () => {
 
               <SectionMovieListContainer>
                 {
-                  sectionMovieList.map((({ id }) => (
+                  sectionMovieList.map((({ id }, index) => (
                     <SectionMovie 
                       key={id} 
-                      sectionMovieId={id}
+                      sectionMovieIndex={index}
                     />
                   )))
                 }
