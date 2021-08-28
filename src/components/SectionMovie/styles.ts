@@ -78,7 +78,6 @@ export const AngleRightIcon = styled(AngleRight)`
 `;
 
 export const Wrapper = styled.div`
-  position: relative;
   display: flex;
   align-items: center;
 
@@ -86,6 +85,10 @@ export const Wrapper = styled.div`
   overflow-x: hidden;
 
   &:hover {
+    .paginationIndicator {
+      visibility: visible;
+    }
+
     .handleNextIcon {
       visibility: visible;
     }
@@ -93,13 +96,26 @@ export const Wrapper = styled.div`
 `;
 
 export const PaginationIndicator = styled.ul`
+  visibility: hidden;
   position: absolute;
   right: 62px;
-  top: 0;
-  margin: -24px 0 12px 0;
+  top: 30px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 1px;
 
   > li {
-    
+    list-style: none;
+    width: 12px;
+    height: 2px;
+    background-color: var(--gray-400);
+
+    &.active {
+      background-color: var(--gray-150);
+    }
   }
 `;
 
@@ -119,7 +135,7 @@ export const HandleNext = styled.span`
   justify-content: center;
   align-items: center;
 
-  height: 100%;
+  height: 10.38rem;
   width: 52px;
   
   background-color: var(--primary-transparent-50);
