@@ -1,10 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { 
-  SectionMovieProps,
-  useMovieContext
-} from '../../context/MovieContext';
+import { useMovieContext } from '../../context/MovieContext';
 
 import { 
   Container,
@@ -13,8 +10,9 @@ import {
   Wrapper,
   PaginationIndicator,
   SectionContent,
-  HandleNext,
-  ChevronForwardIcon
+  HandlePagination,
+  ChevronForwardIcon,
+  ChevronBackIcon
 } from './styles';
 
 import MovieCard from '../MovieCard';
@@ -26,23 +24,24 @@ type Props = {
 type PagesSectionMovieProps = {
   index: number;
   isCurrent: boolean;
+  totalMovieCardsOnPage: number;
 };
 
 const SectionMovie: React.FC<Props> = ({
   sectionMovieIndex
 }) => {
   const { sectionMovieList } = useMovieContext();
-  const sectionMovie: SectionMovieProps = sectionMovieList[sectionMovieIndex];
+  const sectionMovie = sectionMovieList[sectionMovieIndex];
 
-  const [
-    pagesSectionMovie,
-    setPagesSectionMovie
-  ] = useState<PagesSectionMovieProps[]>(
+  const [ pagesSectionMovie, setPagesSectionMovie ] = useState<PagesSectionMovieProps[]>(
     [{
       index: 0,
-      isCurrent: true
+      isCurrent: true,
+      totalMovieCardsOnPage: 0
     }]
   );
+
+  const [sectionWasScrolled, setSectionWasScrolled] = useState<boolean>(false);
 
   const sectionWrapperMessagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const movieCardMessagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
@@ -55,11 +54,18 @@ const SectionMovie: React.FC<Props> = ({
       const sectionWrapperWidth = sectionWrapperElement.clientWidth;
       const movieCardWidth = movieCardElement.clientWidth;
 
-      const totalMovieCardsOnScreen = sectionWrapperWidth / movieCardWidth;
+      const totalMovieCardsOnScreen =  Math.floor(sectionWrapperWidth / movieCardWidth);
 
-      const totalPagesSectionMovie = Math.floor(
+      let totalPagesSectionMovie = Math.floor(
         sectionMovie.movies.length / totalMovieCardsOnScreen
       );
+
+      const totalExcessMoviesOnPage = sectionMovie.movies.length % totalPagesSectionMovie;
+
+      const totalMovieCardsOnLastPage = totalExcessMoviesOnPage === 0
+        ? totalMovieCardsOnScreen : totalExcessMoviesOnPage;
+
+      totalExcessMoviesOnPage > 0 && totalPagesSectionMovie++;
 
       setPagesSectionMovie(
         Array.from(
@@ -67,31 +73,56 @@ const SectionMovie: React.FC<Props> = ({
         )
         .map(index => ({
           index,
-          isCurrent: index === 0
+          isCurrent: index === 0,
+          totalMovieCardsOnPage: index === totalPagesSectionMovie - 1
+            ? totalMovieCardsOnLastPage : totalMovieCardsOnScreen
         }))
       );
     }
-  }, [
-      sectionWrapperMessagesRef,
+  }, [sectionWrapperMessagesRef,
       movieCardMessagesRef,
-      sectionMovie
-    ]
+      sectionMovie]
   );
 
-  function handleNextPage() {
+  function handlePaginationDirection(direction: 'right' | 'left') {
     const currentPage = pagesSectionMovie.find(page => page.isCurrent) 
       || pagesSectionMovie[0];
 
-    const nextPage = pagesSectionMovie.find(page => (
-      page.index === currentPage.index + 1
-    )) || pagesSectionMovie[0];
+    let nextPage: PagesSectionMovieProps;
+
+    nextPage = pagesSectionMovie.find(page => (
+      page.index === currentPage.index - 1
+    )) || pagesSectionMovie[pagesSectionMovie.length - 1];
+
+    if (direction === 'right') {
+      nextPage = pagesSectionMovie.find(page => (
+        page.index === currentPage.index + 1
+      )) || pagesSectionMovie[0];
+    }
 
     setPagesSectionMovie(
       pagesSectionMovie.map(page => ({
-        index: page.index,
+        ...page,
         isCurrent: page.index === nextPage.index
       }))
     );
+
+    const sectionWrapperElement = sectionWrapperMessagesRef.current;
+    const movieCardElement = movieCardMessagesRef.current;
+    const movieCardWidth = movieCardElement.clientWidth;
+
+    const currentPageWidth = movieCardWidth * (pagesSectionMovie[nextPage.index - 1]?.totalMovieCardsOnPage * (nextPage.index - 1));
+    const nextPageWidth = movieCardWidth * nextPage.totalMovieCardsOnPage;
+    const nextSectionScroll = nextPage.index !== 0
+      ? currentPageWidth + nextPageWidth
+      : 0;
+
+    sectionWrapperElement.scrollTo({
+      left: nextSectionScroll,
+      behavior: 'smooth'
+    });
+
+    !sectionWasScrolled && setSectionWasScrolled(true);
   }
 
   return (
@@ -107,38 +138,45 @@ const SectionMovie: React.FC<Props> = ({
         </Link>
       </SectionTitle>
 
-      <Wrapper ref={sectionWrapperMessagesRef}>
+      <Wrapper 
+        ref={sectionWrapperMessagesRef}
+        className={`${sectionWasScrolled && 'section-wrapper-expanded'}`}
+      >
         <PaginationIndicator className="paginationIndicator">
-          {
-            pagesSectionMovie.map(page => (
-              <li 
-                key={page.index}
-                className={`${page.isCurrent && 'active'}`}
-              />
-            ))
-          }
+          {pagesSectionMovie.map(page => (
+            <li 
+              key={page.index}
+              className={`${page.isCurrent && 'active'}`}
+            />
+          ))}
         </PaginationIndicator>
+
+        <HandlePagination
+          className={`handlePrevious ${!sectionWasScrolled && 'disabled'}`}
+          onClick={() => handlePaginationDirection('left')}
+        >
+          <ChevronBackIcon className="handlePreviousIcon" />
+        </HandlePagination>
 
         <SectionContent>
           {
             sectionMovie.movies.map(movie => (
-              <div
-                key={movie.id}
-                ref={movieCardMessagesRef}
-              >
+              <div key={movie.id} ref={movieCardMessagesRef}>
                 <MovieCard
                   {...movie}
+                  isPoster={sectionMovie.isPoster}
                 />
               </div>
             ))
           }
         </SectionContent>
 
-        <HandleNext
-          onClick={() => handleNextPage()}
+        <HandlePagination
+          className="handleNext"
+          onClick={() => handlePaginationDirection('right')}
         >
           <ChevronForwardIcon className="handleNextIcon" />
-        </HandleNext>
+        </HandlePagination>
       </Wrapper>
     </Container>
   );
