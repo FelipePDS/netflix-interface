@@ -1,10 +1,12 @@
 import styled from 'styled-components';
 
+import bgLostInSpace from '../../assets/bg-lost-in-space.png';
+
 export const Container = styled.div`
 	width: 100vw;
 	height: 100vh;
 
-	background-image: url("https://assets.nflxext.com/ffe/siteui/pages/errors/bg-lost-in-space.png");
+	background-image: url(${bgLostInSpace});
 	background-attachment: fixed;
 	background-repeat: no-repeat;
 	background-size: cover;
