@@ -1,21 +1,42 @@
 import React from 'react';
 
-import { Container } from './styles';
+import { 
+  Container,
+  MovieCardControl
+} from './styles';
+
+import { useWindowDimensions } from '../../utils/appUtil';
 
 import { FormatedMovieProps } from '../../context/MovieContext';
 
-const MovieCard: React.FC<FormatedMovieProps> = ({
-  name,
-  title,
-  backdrop_path_full,
-  poster_path_full,
-  genres
+interface MovieCardProps extends FormatedMovieProps {
+  isPoster?: boolean;
+};
+
+const MovieCard: React.FC<MovieCardProps> = ({
+  backdrop_path_w1280_url,
+  poster_path_w1280_url,
+  isPoster
 }) => {
+  const { windowWidth } = useWindowDimensions();
+
+  const isMobileCard = windowWidth < 800;
+
+  const movieCardImage = isMobileCard || isPoster
+    ? poster_path_w1280_url
+    : backdrop_path_w1280_url;
+
   return (
     <Container 
-      imageUrl={poster_path_full}
+      className={`
+        ${isPoster ? 'poster-movie' : ''}
+        ${isMobileCard ? 'mobile-card' : ''}
+      `}
+      imageUrl={movieCardImage}
     >
-      {/* {name || title} */}
+      <MovieCardControl>
+        
+      </MovieCardControl>
     </Container>
   );
 }
