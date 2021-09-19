@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { useProfileContext } from '../../context/ProfileContext';
 import { 
-  GenreProps,
   FormatedMovieProps, 
   SectionMovieProps, 
   useMovieContext 
@@ -14,17 +12,13 @@ import {
 } from '../../utils/profileUtil';
 
 import { 
-  formatMovieList,
   requestUrlsMovieApi,
+  formatMovieList,
+  getGenreList,
   raffleFeaturedMovieIndex
 } from '../../utils/movieUtil';
 
-import { movieApi } from '../../services/api';
-
-import { 
-  Container,
-  SectionMovieListContainer
-} from './styles';
+import { Container, SectionMovieListContainer } from './styles';
 
 import Load from '../../components/Load';
 import MenuTop from '../../components/MenuTop';
@@ -32,109 +26,85 @@ import FeaturedMovie from '../../components/FeaturedMovie';
 import SectionMovie from '../../components/SectionMovie';
 import Footer from '../../components/Footer';
 
-type MovieGenreRouteProps = {
+type MovieApiRoutePathsProps = {
   name: string;
   routePath: string;
+  isPoster?: boolean;
 };
 
 const Browse: React.FC = () => {
-  const [isLoad, setIsLoad] = useState<Boolean>(true);
+  const [isLoading, setIsLoading] = useState<Boolean>(true);
 
-  const { profileList } = useProfileContext();
   const {
     sectionMovieList,
     updateSectionMoviesList,
-    updateFeaturedMovieIndex,
-    featuredMovieIndex
+    updateFeaturedMovieIndex
   } = useMovieContext();
 
   LoadProfileList();
   UpdateSelectedProfile();
 
   useEffect(() => {
-    async function getSectionMovieList() {
-      const apiKey = process.env.REACT_APP_API_KEY;
-    
-      const movieApiRoutePaths : MovieGenreRouteProps[] = [
+    async function loadMovies() {
+      const genreList = await getGenreList();
+
+      const movieApiRoutePaths: MovieApiRoutePathsProps[] = [
         { name: 'Em alta', routePath: '/tv/popular?' },
-        { name: 'Populares na Cloneflix', routePath: '/trending/all/week?' },
         { name: 'Melhores Avaliados', routePath: '/movie/top_rated?' },
         { name: 'Lançamentos', routePath: '/movie/now_playing?' },
+        { name: 'Populares na Netflix', routePath: '/trending/all/week?', isPoster: true },
         { name: 'Ação', routePath: '/discover/movie?with_genres=28&' },
         { name: 'Ficção científica', routePath: '/discover/movie?with_genres=878&' },
         { name: 'Romance', routePath: '/discover/movie?with_genres=10749&' }
       ];
 
-      const genreResponses = await movieApi.get(
-        `/genre/list?api_key=${apiKey}`
-      );
+      Promise.all(requestUrlsMovieApi(movieApiRoutePaths)).then(responses => {
+        const sectionMoviesListResponses: SectionMovieProps[] = responses.map(
+          (response, index) => {
+            const movieList: FormatedMovieProps[] = response.data.results;
 
-      const genreList: GenreProps[] = genreResponses.data.genres;
-
-      Promise.all([...requestUrlsMovieApi(movieApiRoutePaths)])
-        .then(responses => {
-
-          const sectionMovieListResponses: SectionMovieProps[] = responses.map(
-            (response, index) => {
-              const movieList: FormatedMovieProps[] = response.data.results;
-
-              return {
-                id: index,
-                name: movieApiRoutePaths[index].name,
-                movies: formatMovieList(movieList, genreList)
-              }
+            return {
+              id: index,
+              name: movieApiRoutePaths[index].name,
+              isPoster: movieApiRoutePaths[index].isPoster ? true : false,
+              movies: formatMovieList(movieList, genreList)
             }
-          );
+          }
+        );
 
-          updateSectionMoviesList(sectionMovieListResponses);
+        updateSectionMoviesList(sectionMoviesListResponses);
 
-          const sectionFeaturedMovieIndex = 0;
-          const randomFeaturedMovieIndex = raffleFeaturedMovieIndex(
-            sectionMovieListResponses, sectionFeaturedMovieIndex
-          );
+        const sectionFeaturedMovieIndex = 0;
+        const randomFeaturedMovieIndex = raffleFeaturedMovieIndex(
+          sectionMoviesListResponses[sectionFeaturedMovieIndex]
+        );
 
-          updateFeaturedMovieIndex(
-            sectionFeaturedMovieIndex, randomFeaturedMovieIndex
-          );
-
-        })
-        .catch(err => {
-          console.log(err);
-        });
+        updateFeaturedMovieIndex(sectionFeaturedMovieIndex, randomFeaturedMovieIndex);
+      })
+      .catch(err => {
+        console.log(err);
+      });
     }
 
-    if (sectionMovieList.length === 0) {
-      getSectionMovieList();
+    const hasSectionMovieListLoaded = sectionMovieList.length > 0;
+
+    if (!hasSectionMovieListLoaded) {
+      loadMovies();
     }
-
-    const hasSectionMovieListLoaded: boolean = sectionMovieList.length > 0;
-
-    const hasFeaturedMovieLoaded: boolean = featuredMovieIndex.movieIndex !== undefined 
-      && featuredMovieIndex.sectionIndex !== undefined;
-
-    const hasProfileListLoaded: boolean = profileList.length > 0;
 
     setTimeout(() => {
-      setIsLoad(
-        (
-          hasSectionMovieListLoaded &&
-          hasFeaturedMovieLoaded &&
-          hasProfileListLoaded
-        ) && false
-      );
+      setIsLoading(!hasSectionMovieListLoaded);
     }, 1200);
 
-  }, [profileList,
-      sectionMovieList,
+  }, [sectionMovieList,
       updateSectionMoviesList,
-      updateFeaturedMovieIndex,
-      featuredMovieIndex]
+      updateFeaturedMovieIndex]
   );
 
   return (
     <Container>
       {
-        isLoad
+        isLoading
           ? (
             <Load />
           )
@@ -146,12 +116,12 @@ const Browse: React.FC = () => {
 
               <SectionMovieListContainer>
                 {
-                  sectionMovieList.map((({ id }, index) => (
+                  sectionMovieList.map(({ id }, index) => (
                     <SectionMovie 
                       key={id} 
                       sectionMovieIndex={index}
                     />
-                  )))
+                  ))
                 }
               </SectionMovieListContainer>
 
