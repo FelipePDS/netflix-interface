@@ -44,6 +44,14 @@ export const Container = styled.div<FeaturedMovieContainerProps>`
 
 		content: '';
 	}
+
+	@media (max-width: 800px) {
+		height: 62vw;
+	}
+
+	@media (max-width: 600px) {
+		height: 66vw;
+	}
 `;
 
 export const HeroImageWrapper = styled.div`
@@ -80,6 +88,10 @@ export const FeaturedMovieInfo = styled.div`
 
 	@media (max-width: 600px) {
 		max-width: 40vw;
+	}
+
+	@media (max-width: 450px) {
+		max-width: 45vw;
 	}
 `;
 
@@ -121,7 +133,7 @@ export const DetailsWrapper = styled.div`
 
 export const DescriptionWrapper = styled.div`
 	width: 100%;
-	max-height: 11vw;
+	max-height: 11.3vw;
 	margin-bottom: 1.7vw;
 
 	color: var(--white);
@@ -137,7 +149,7 @@ export const DescriptionWrapper = styled.div`
 	}
 
 	@media (max-width: 450px) {
-		font-size: 1.8vw;
+		font-size: 1.9vw;
 	}
 `;
 
@@ -314,6 +326,14 @@ export const MaturityRating = styled.div<MaturityRatingProps>`
 
 			width: 1.2vw;
 			height: 1.2vw;
+		}
+	}
+
+	@media (max-width: 500px) {
+		height: 2.9vw;
+
+		> span::after {
+			font-size: 1.8vw;
 		}
 	}
 `;

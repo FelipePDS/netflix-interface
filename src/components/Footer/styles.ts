@@ -10,17 +10,23 @@ import { SocialInstagram } from 'styled-icons/typicons';
 export const Container = styled.footer`
   margin: 0 15%;
   z-index: 2;
+
+  font-size: .92vw;
+
+  @media (max-width: 1300px) {
+    font-size: 12px;
+  }
 `;
 
 export const ContentInfo = styled.div`
-  max-width: 62.5rem;
+  max-width: 57.3vw;
 `;
 
 export const SocialLinks = styled.div`
-  margin-bottom: 2rem;
+  margin-bottom: 1.8vw;
 
   > a+a {
-    margin-left: .95rem;
+    margin-left: .9vw;
   }
 
   > a svg {

@@ -1,7 +1,10 @@
 import styled from 'styled-components';
 
 import { AngleRight } from 'styled-icons/fa-solid';
-import { ChevronForward } from 'styled-icons/ionicons-sharp';
+import { 
+  ChevronForward,
+  ChevronBack
+} from 'styled-icons/ionicons-sharp';
 
 export const Container = styled.div`
   position: relative;
@@ -27,6 +30,7 @@ export const SectionTitle = styled.div`
     color: var(--link);
 
     > .view-all-content {
+      position: relative;
       display: none;
       align-items: flex-end;
 
@@ -36,8 +40,11 @@ export const SectionTitle = styled.div`
       }
 
       > svg {
+        position: absolute;
+        top: -.72vw;
+        left: .21rem;
+
         width: .7vw;
-        margin: -2px 0 0 .18rem;
       }
     }
 
@@ -45,29 +52,101 @@ export const SectionTitle = styled.div`
       color: var(--white);
 
       .view-all-content {
-        margin-left: 1.1rem;
+        margin-left: 1.01vw;
 
         > strong {
           display: inline;
+          margin-left: .15vw;
+
+          animation: textFadeRight 850ms;
+
+          @keyframes textFadeRight {
+            from {
+              opacity: 0;
+              margin-left: -.8vw;
+            }
+
+            to {
+              opacity: 1;
+              margin-left: .15vw;
+            }
+          }
         }
 
         svg {
+          top: .5vw;
+          right: -.69vw;
+          left: unset;
+
           width: .5vw;
-          margin: 0 0 -2px .2rem;
+
+          animation: iconFadeRight 250ms linear;
+
+          @keyframes iconFadeRight {
+            from {
+              transform: translateX(-3vw);
+            }
+
+            to {
+              transform: translateX(0);
+            }
+          }
+        }
+      }
+    }
+
+    @media (max-width: 799px) {
+      font-size: 12px;
+
+      > .view-all-content {
+        > strong {
+          font-size: 1.04vw;
         }
 
-        animation: fadeRight 750ms;
+        > svg {
+          width: .9vw;
+        }
+      }
 
-        @keyframes fadeRight {
-          from {
-            opacity: 0;
-            margin-left: -.5rem;
-          }
+      &:hover {
+        > .view-all-content svg {
+          width: .62vw;
+        }
+      }
+    }
 
-          to {
-            opacity: 1;
-            margin-left: 1.1rem;
-          }
+    @media (max-width: 799px) {
+      &:hover {
+        > .view-all-content svg {
+          width: .66vw;
+        }
+      }
+    }
+    
+    @media (max-width: 599px) {
+      font-size: 10px;
+
+      > .view-all-content {
+        > strong {
+          font-size: 1.2vw;
+        }
+
+        > svg {
+          width: 1vw;
+        }
+      }
+
+      &:hover {
+        > .view-all-content svg {
+          width: .7vw;
+        }
+      }
+    }
+
+    @media (max-width: 499px) {
+      &:hover {
+        > .view-all-content svg {
+          top: 1vw;
         }
       }
     }
@@ -84,8 +163,19 @@ export const Wrapper = styled.div`
   width: 100%;
   overflow-x: hidden;
 
+  transition: all .2s;
+
+  &.section-wrapper-expanded {
+    width: 103.3%;
+    margin-left: -3.3%;
+  }
+
   &:hover {
     .paginationIndicator {
+      visibility: visible;
+    }
+
+    .handlePreviousIcon {
       visibility: visible;
     }
 
@@ -98,8 +188,8 @@ export const Wrapper = styled.div`
 export const PaginationIndicator = styled.ul`
   visibility: hidden;
   position: absolute;
-  right: 62px;
-  top: 30px;
+  right: 3.5vw;
+  top: 1.7vw;
 
   display: flex;
   justify-content: center;
@@ -110,7 +200,7 @@ export const PaginationIndicator = styled.ul`
   > li {
     list-style: none;
     width: 12px;
-    height: 2px;
+    height: 2.1px;
     background-color: var(--gray-400);
 
     &.active {
@@ -119,31 +209,41 @@ export const PaginationIndicator = styled.ul`
   }
 `;
 
-export const SectionContent = styled.section`
-  display: flex;
-  align-items: center;
-
-  gap: 4px;
-`;
-
-export const HandleNext = styled.span`
+export const HandlePagination = styled.span`
   position: absolute;
-  right: 0;
   z-index: 6;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  height: 10.38rem;
-  width: 52px;
+  width: 2.951vw;
+  height: 8.707vw;
   
   background-color: var(--primary-transparent-50);
   color: var(--white);
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
 
   cursor: pointer;
+
+  &.handlePrevious {
+    left: -3.3%;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+
+    &.disabled {
+      visibility: hidden !important;
+      
+      .handlePreviousIcon {
+        visibility: hidden !important;
+      }
+    }
+  }
+
+  &.handleNext {
+    right: 0;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+  }
 
   > svg {
     visibility: hidden;
@@ -151,11 +251,6 @@ export const HandleNext = styled.span`
     z-index: 7;
 
     transform-origin: 45% 50%;
-    -webkit-transition: -webkit-transform .1s ease-out 0s;
-    transition: -webkit-transform .1s ease-out 0s;
-    -o-transition: -o-transform .1s ease-out 0s;
-    -moz-transition: transform .1s ease-out 0s,-moz-transform .1s ease-out 0s;
-    transition: transform .1s ease-out 0s;
     transition: transform .1s ease-out 0s,-webkit-transform .1s ease-out 0s,-moz-transform .1s ease-out 0s,-o-transform .1s ease-out 0s;
   }
   
@@ -169,4 +264,14 @@ export const HandleNext = styled.span`
 `;
 
 export const ChevronForwardIcon = styled(ChevronForward)`
+`;
+
+export const ChevronBackIcon = styled(ChevronBack)`
+`;
+
+export const SectionContent = styled.section`
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
 `;
