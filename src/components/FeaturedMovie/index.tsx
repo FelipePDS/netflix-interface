@@ -38,12 +38,13 @@ const FeaturedMovie: React.FC = () => {
 
 	return (
 		<Container 
-			imageUrl={featuredMovie.backdrop_path_full}
+			imageUrl={featuredMovie.backdrop_path_original_url}
 		>
 			<HeroImageWrapper>
 				<FeaturedMovieInfo>
 					<TitleWrapper>
-						{featuredMovie.name}
+						{featuredMovie.name?.substr(0, 30)}
+						{featuredMovie.name?.length >= 30 && '...'}
 					</TitleWrapper>
 
 					<DetailsWrapper>
@@ -57,7 +58,8 @@ const FeaturedMovie: React.FC = () => {
 					</DetailsWrapper>
 
 					<DescriptionWrapper>
-							{featuredMovie.overview}
+							{featuredMovie.overview?.substr(0, 300)}
+							{featuredMovie.overview?.length >= 300 && '...'}
 					</DescriptionWrapper>
 
 					<NavigationButtons>
