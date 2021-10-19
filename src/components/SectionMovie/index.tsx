@@ -1,6 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import { useWindowDimensions } from '../../utils/appUtil';
+
 import { useMovieContext } from '../../context/MovieContext';
 
 import { 
@@ -33,7 +35,7 @@ const SectionMovie: React.FC<Props> = ({
   const { sectionMovieList } = useMovieContext();
   const sectionMovie = sectionMovieList[sectionMovieIndex];
 
-  const [ pagesSectionMovie, setPagesSectionMovie ] = useState<PagesSectionMovieProps[]>(
+  const [pagesSectionMovie, setPagesSectionMovie] = useState<PagesSectionMovieProps[]>(
     [{
       index: 0,
       isCurrent: true,
@@ -41,10 +43,14 @@ const SectionMovie: React.FC<Props> = ({
     }]
   );
 
-  const [sectionWasScrolled, setSectionWasScrolled] = useState<boolean>(false);
+  const [sectionWasScrolled, setSectionWasScrolled] = useState(false);
+  
+  const { windowWidth } = useWindowDimensions();
 
   const sectionWrapperMessagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const movieCardMessagesRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+
+  const [sectionWrapperMarginLeft, setSectionWrapperMarginLeft] = useState(0);
 
   useEffect(() => {
     const sectionWrapperElement = sectionWrapperMessagesRef.current;
@@ -56,9 +62,7 @@ const SectionMovie: React.FC<Props> = ({
 
       const totalMovieCardsOnScreen =  Math.floor(sectionWrapperWidth / movieCardWidth);
 
-      let totalPagesSectionMovie = Math.floor(
-        sectionMovie.movies.length / totalMovieCardsOnScreen
-      );
+      let totalPagesSectionMovie = Math.floor(sectionMovie.movies.length / totalMovieCardsOnScreen);
 
       const totalExcessMoviesOnPage = sectionMovie.movies.length % totalPagesSectionMovie;
 
@@ -67,11 +71,10 @@ const SectionMovie: React.FC<Props> = ({
 
       totalExcessMoviesOnPage > 0 && totalPagesSectionMovie++;
 
+      const pagesSectionMovieLength = Array.from(Array(totalPagesSectionMovie).keys());
+
       setPagesSectionMovie(
-        Array.from(
-          Array(totalPagesSectionMovie).keys()
-        )
-        .map(index => ({
+        pagesSectionMovieLength.map(index => ({
           index,
           isCurrent: index === 0,
           totalMovieCardsOnPage: index === totalPagesSectionMovie - 1
@@ -81,23 +84,25 @@ const SectionMovie: React.FC<Props> = ({
     }
   }, [sectionWrapperMessagesRef,
       movieCardMessagesRef,
-      sectionMovie]
+      sectionMovie,
+      windowWidth]
   );
 
   function handlePaginationDirection(direction: 'right' | 'left') {
+    const firstPage = pagesSectionMovie[0];
+    const lastPage = pagesSectionMovie[pagesSectionMovie.length - 1];
+
     const currentPage = pagesSectionMovie.find(page => page.isCurrent) 
       || pagesSectionMovie[0];
 
-    let nextPage: PagesSectionMovieProps;
+    let nextPage = pagesSectionMovie.find(page => (
+      page.index === currentPage.index + 1
+    )) || firstPage;
 
-    nextPage = pagesSectionMovie.find(page => (
-      page.index === currentPage.index - 1
-    )) || pagesSectionMovie[pagesSectionMovie.length - 1];
-
-    if (direction === 'right') {
+    if (direction === 'left') {
       nextPage = pagesSectionMovie.find(page => (
-        page.index === currentPage.index + 1
-      )) || pagesSectionMovie[0];
+        page.index === currentPage.index - 1
+      )) || lastPage;
     }
 
     setPagesSectionMovie(
@@ -107,20 +112,19 @@ const SectionMovie: React.FC<Props> = ({
       }))
     );
 
-    const sectionWrapperElement = sectionWrapperMessagesRef.current;
     const movieCardElement = movieCardMessagesRef.current;
     const movieCardWidth = movieCardElement.clientWidth;
 
-    const currentPageWidth = movieCardWidth * (pagesSectionMovie[nextPage.index - 1]?.totalMovieCardsOnPage * (nextPage.index - 1));
-    const nextPageWidth = movieCardWidth * nextPage.totalMovieCardsOnPage;
+    const totalMovieCardsBehind = pagesSectionMovie[nextPage.index - 1]?.totalMovieCardsOnPage * (nextPage.index - 1);
+
+    const currentPageWidth = (movieCardWidth - 6) * totalMovieCardsBehind;
+    const nextPageWidth = (movieCardWidth - 6) * nextPage.totalMovieCardsOnPage;
+
     const nextSectionScroll = nextPage.index !== 0
       ? currentPageWidth + nextPageWidth
       : 0;
 
-    sectionWrapperElement.scrollTo({
-      left: nextSectionScroll,
-      behavior: 'smooth'
-    });
+    setSectionWrapperMarginLeft(nextSectionScroll);
 
     !sectionWasScrolled && setSectionWasScrolled(true);
   }
@@ -140,19 +144,20 @@ const SectionMovie: React.FC<Props> = ({
 
       <Wrapper 
         ref={sectionWrapperMessagesRef}
-        className={`${sectionWasScrolled && 'section-wrapper-expanded'}`}
+        className={`${sectionWasScrolled ? 'section-wrapper-expanded' : ''}`}
+        marginLeft={sectionWrapperMarginLeft}
       >
         <PaginationIndicator className="paginationIndicator">
           {pagesSectionMovie.map(page => (
             <li 
               key={page.index}
-              className={`${page.isCurrent && 'active'}`}
+              className={`${page.isCurrent ? 'active' : ''}`}
             />
           ))}
         </PaginationIndicator>
 
         <HandlePagination
-          className={`handlePrevious ${!sectionWasScrolled && 'disabled'}`}
+          className={`handlePrevious ${!sectionWasScrolled ? 'disabled' : ''}`}
           onClick={() => handlePaginationDirection('left')}
         >
           <ChevronBackIcon className="handlePreviousIcon" />
@@ -161,7 +166,11 @@ const SectionMovie: React.FC<Props> = ({
         <SectionContent>
           {
             sectionMovie.movies.map(movie => (
-              <div key={movie.id} ref={movieCardMessagesRef}>
+              <div 
+                key={movie.id} 
+                ref={movieCardMessagesRef}
+                className={`${sectionMovie.isPoster ? 'poster-movie' : ''}`}
+              >
                 <MovieCard
                   {...movie}
                   isPoster={sectionMovie.isPoster}

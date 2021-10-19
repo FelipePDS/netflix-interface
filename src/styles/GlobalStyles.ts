@@ -15,12 +15,14 @@ export default createGlobalStyle`
     --green-darker: #34bd56;
     --green-secondary-darker: #009c4c;
 
+    --gray-09: #ffffffb3;
     --gray-10: #d2d2d2;
     --gray-50: #ffffffb3;
     --gray-100: #ffffff4d;
     --gray-150: #aaaaaa;
     --gray-200: #808080;
     --gray-250: #777;
+    --gray-300: #646464;
     --gray-400: #4D4D4D;
     --gray-700: #333;
     --gray-750: #2a2a2a;
@@ -32,6 +34,7 @@ export default createGlobalStyle`
     --link: #e5e5e5;
     --notification: #b9090b;
     --logo-color: #e50914;
+    --tooltip: #282a36;
   }
 
   * {
@@ -45,6 +48,10 @@ export default createGlobalStyle`
     user-select: none;
     background: var(--primary);
     color: var(--white);
+  }
+
+  html {
+    overflow-x: hidden;
   }
 
   *, button, input {
@@ -62,6 +69,89 @@ export default createGlobalStyle`
     text-decoration: none;
   }
 
+  /* TOOLTIP */
+  .tooltip-bottom,
+  .tooltip-top {
+    position: relative;
+  }
+
+  .tooltip-bottom span,
+  .tooltip-top span {
+    visibility: hidden;
+
+    position: absolute;
+    z-index: 999;
+
+    padding: .5rem;
+
+    color: var(--white);
+    background: var(--tooltip);
+    box-shadow: rgba(0 0 0 / 45%) 0 2px 5px;
+    
+    border-radius: 4px;
+
+    font-size: 14px;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .tooltip-bottom span {
+    bottom: -3rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .tooltip-top span {
+    top: -3rem;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  .tooltip-bottom:hover span,
+  .tooltip-top:hover span {
+    visibility: visible;
+
+    animation: expand-box .1s ease;
+  }
+
+  .tooltip-bottom span:after,
+  .tooltip-top span:after {
+    content: '';
+    position: absolute;
+  }
+
+  .tooltip-bottom span:after {
+    bottom: 100%;
+    left: calc(50% - 8px);
+
+    border-bottom: 8px solid var(--tooltip);
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+  }
+
+  .tooltip-top span:after {
+    top: 100%;
+    left: calc(50% - 8px);
+
+    border-top: 8px solid var(--tooltip);
+    border-right: 8px solid transparent;
+    border-left: 8px solid transparent;
+  }
+
+  @keyframes expand-box {
+    from {
+      padding: .35rem;
+      font-size: 12px;
+    }
+
+    to {
+      padding: .5rem;
+      font-size: 14px;
+    }
+  }
+
+
+  /* SCROLLBAR */
   ::-webkit-scrollbar {
     background-color: #202324;
     color: #aba499;

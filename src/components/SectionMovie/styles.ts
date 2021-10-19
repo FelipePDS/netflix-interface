@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 
 import { AngleRight } from 'styled-icons/fa-solid';
-import { 
-  ChevronForward,
-  ChevronBack
-} from 'styled-icons/ionicons-sharp';
+import { ChevronForward, ChevronBack } from 'styled-icons/ionicons-sharp';
+
+type SectionWrapperProps = {
+  marginLeft: number;
+};
 
 export const Container = styled.div`
   position: relative;
@@ -80,7 +81,7 @@ export const SectionTitle = styled.div`
 
           width: .5vw;
 
-          animation: iconFadeRight 250ms linear;
+          animation: iconFadeRight 250ms ease;
 
           @keyframes iconFadeRight {
             from {
@@ -156,18 +157,19 @@ export const SectionTitle = styled.div`
 export const AngleRightIcon = styled(AngleRight)`
 `;
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<SectionWrapperProps>`
   display: flex;
   align-items: center;
 
-  width: 100%;
+  /* width: 100%; */
   overflow-x: hidden;
 
-  transition: all .2s;
+  transition: 1s ease-in-out;
+
+  margin-left: ${props => props.marginLeft * -1}px;
 
   &.section-wrapper-expanded {
-    width: 103.3%;
-    margin-left: -3.3%;
+    margin-left:  calc(${props => props.marginLeft * -1}px - 3.3%);
   }
 
   &:hover {
@@ -211,14 +213,23 @@ export const PaginationIndicator = styled.ul`
 
 export const HandlePagination = styled.span`
   position: absolute;
+  bottom: 0;
   z-index: 6;
 
   display: flex;
   justify-content: center;
   align-items: center;
 
-  width: 2.951vw;
-  height: 8.707vw;
+  width: calc(100% - 92.88vw);
+  height: calc(100% - 2.2vw);
+
+  @media (max-width: 599px) {
+    width: calc(100% - 91.13vw);
+  }
+
+  @media (max-width: 399px) {
+    width: calc(100% - 92.3vw);
+  }
   
   background-color: var(--primary-transparent-50);
   color: var(--white);
@@ -270,8 +281,65 @@ export const ChevronBackIcon = styled(ChevronBack)`
 `;
 
 export const SectionContent = styled.section`
-  display: flex;
-  align-items: center;
+  display: flex !important;
+  align-items: center !important;
 
-  gap: 4px;
+  gap: 4px !important;
+
+  > div {
+    width: 15.27vw;
+    height: 8.707vw;
+
+    &.poster-movie {
+      width: 15.27vw;
+      height: 30.707vw;
+    }
+
+    @media (max-width: 1399px) {
+      width: 18.25vw;
+      height: 10.2vw;
+
+      &.poster-movie {
+        width: 18.25vw;
+        height: 35.8vw;
+      }
+    }
+
+    @media (max-width: 1099px) {
+      width: 22.8vw;
+      height: 12.9vw;
+
+      &.poster-movie {
+        width: 22.8vw;
+        height: 45.4vw;
+      }
+    }
+
+    @media (max-width: 799px) {
+      width: 18vw;
+      height: 24vw;
+    }
+
+    @media (max-width: 699px) {
+      &.poster-movie {
+        width: 30vw;
+        height: 60.5vw;
+      }
+    }
+
+    @media (max-width: 599px) {
+      width: 22.1vw;
+      height: 30vw;
+    }
+
+    @media (max-width: 399px) {
+      width: 29.8vw;
+      height: 42vw;
+
+      &.poster-movie {
+        width: 45.1vw;
+        height: 82vw;
+      }
+    }
+  }
 `;

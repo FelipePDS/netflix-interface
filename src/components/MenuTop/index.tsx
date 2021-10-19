@@ -26,7 +26,7 @@ const MenuTop: React.FC<Props> = ({
 
   return (
     <Container 
-      className={`${currentScrollY > 0 && 'solidBackground'}`}
+      className={`${currentScrollY > 0 ? 'solidBackground' : ''}`}
     >
       <Link to="/"><img src={Logo} alt="Netflix Logo" /></Link>
 

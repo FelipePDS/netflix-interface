@@ -6,27 +6,27 @@ import { userApi } from '../services/api';
 export function LoadProfileList(): void {
   const { 
     profileList,
-    getProfileList 
+    updateProfileList 
   } = useProfileContext();
 
   useEffect(() => {
     if (profileList.length === 0) {
       userApi.get('users')
         .then(({ data }) => {
-          getProfileList(data);
+          updateProfileList(data);
         })
         .catch(err => {
           console.log(err);
         });
     }
-  }, [profileList, getProfileList]);
+  }, [profileList, updateProfileList]);
 }
 
 export function UpdateSelectedProfile() {
   const { 
     wasCaughtSelectedProfile,
     selectedProfileId,
-    getProfile
+    updateProfile
   } = useProfileContext();
 
   if (!wasCaughtSelectedProfile) {
@@ -36,7 +36,7 @@ export function UpdateSelectedProfile() {
       }
     })
       .then(({ data }) => {
-        getProfile(data[0]);
+        updateProfile(data[0]);
       })
       .catch(err => {
         console.log(err);

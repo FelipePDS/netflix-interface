@@ -63,6 +63,8 @@ const Browse: React.FC = () => {
           (response, index) => {
             const movieList: FormatedMovieProps[] = response.data.results;
 
+            console.log(response.data.results);
+
             return {
               id: index,
               name: movieApiRoutePaths[index].name,

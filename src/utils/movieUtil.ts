@@ -56,7 +56,8 @@ function formatMovieList(
 	movieList: FormatedMovieProps[], genreList: GenreProps[]
 ): FormatedMovieProps[] {
 	return movieList.map(movie => {
-		const first_air_year = movie.first_air_date?.split('-')[0];
+		const first_air_year = movie.first_air_date?.split('-')[0]
+			|| movie.release_date?.split('-')[0];
 		const rating = `${movie.vote_average * 10}%`;
 
 		const images_base_url = `${process.env.REACT_APP_IMAGES_URL_BASE}`;

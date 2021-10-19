@@ -11,8 +11,8 @@ type ProfileContextData = {
   profileList: Profile[];
   selectedProfileId: string;
   wasCaughtSelectedProfile: boolean;
-  getProfile: (profile: Profile) => void;
-  getProfileList: (list: Profile[]) => void;
+  updateProfile: (profile: Profile) => void;
+  updateProfileList: (list: Profile[]) => void;
   toggleSelectedProfileId: (id: string) => void;
 };
 
@@ -28,12 +28,12 @@ export function ProfileContextProvider({ children }: ProfileContextProviderProps
   const [selectedProfileId, setSelectedProfileId] = useState(localStorage.SelectedProfileId || '1');
   const [wasCaughtSelectedProfile, setWasCaughtSelectedProfile] = useState(false);
 
-  function getProfile(profile: Profile) {
+  function updateProfile(profile: Profile) {
     setProfile(profile);
     setWasCaughtSelectedProfile(true);
   };
 
-  function getProfileList(profileList: Profile[]) {
+  function updateProfileList(profileList: Profile[]) {
     setProfileList(profileList);
   };
 
@@ -49,8 +49,8 @@ export function ProfileContextProvider({ children }: ProfileContextProviderProps
       profileList,
       selectedProfileId,
       wasCaughtSelectedProfile,
-      getProfile,
-      getProfileList,
+      updateProfile,
+      updateProfileList,
       toggleSelectedProfileId
     }}>
       {children}

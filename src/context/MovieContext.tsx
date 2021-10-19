@@ -4,6 +4,7 @@ export type MovieProps = {
 	adult: boolean;
 	backdrop_path: string;
 	first_air_date: string;
+	release_date: string;
 	genre_ids: (string | undefined)[];
 	id: string;
 	name: string;
